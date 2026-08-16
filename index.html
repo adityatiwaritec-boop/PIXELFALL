@@ -8,15 +8,18 @@
     <meta
         name="viewport"
         content="width=device-width,
-                 initial-scale=1.0,
-                 maximum-scale=1.0,
-                 user-scalable=no,
-                 viewport-fit=cover"
+        initial-scale=1.0,
+        maximum-scale=1.0,
+        user-scalable=no,
+        viewport-fit=cover"
     >
 
     <title>PIXELFALL</title>
 
-    <link rel="stylesheet" href="style.css">
+    <link
+        rel="stylesheet"
+        href="style.css"
+    >
 
 </head>
 
@@ -25,57 +28,76 @@
 
 <div class="game-wrapper">
 
-    <!-- ========================= -->
-    <!-- TOP BAR -->
-    <!-- ========================= -->
+
+    <!-- =========================
+         TOP BAR
+    ========================== -->
 
     <header class="topbar">
 
         <div class="logo">
-            <span>PIXEL</span>FALL
+            PIXEL<span>FALL</span>
         </div>
 
 
         <div class="stats">
 
             <div>
-                ⭐ <span id="score">0</span>
+                ⭐
+                <span id="score">0</span>
             </div>
 
             <div>
-                💎 <span id="coins">0</span>
+                💎
+                <span id="coins">0</span>
             </div>
 
             <div>
-                ❤️ <span id="lives">3</span>
+                ❤️
+                <span id="lives">3</span>
             </div>
 
         </div>
 
 
-        <button
-            id="pauseBtn"
-            class="pause-btn"
-            type="button"
-        >
-            Ⅱ
-        </button>
+        <div class="top-buttons">
+
+            <button
+                id="soundBtn"
+                class="icon-btn"
+                type="button"
+                aria-label="Toggle sound"
+            >
+                🔊
+            </button>
+
+            <button
+                id="pauseBtn"
+                class="icon-btn"
+                type="button"
+            >
+                Ⅱ
+            </button>
+
+        </div>
 
     </header>
 
 
-    <!-- ========================= -->
-    <!-- GAME -->
-    <!-- ========================= -->
+
+    <!-- =========================
+         GAME AREA
+    ========================== -->
 
     <main class="game-container">
 
         <canvas id="gameCanvas"></canvas>
 
 
-        <!-- ========================= -->
-        <!-- START SCREEN -->
-        <!-- ========================= -->
+
+        <!-- =========================
+             START SCREEN
+        ========================== -->
 
         <section
             id="startScreen"
@@ -126,10 +148,6 @@
                         — Pause
                     </p>
 
-                    <p class="mobile-help">
-                        📱 Tap PLAY GAME on mobile
-                    </p>
-
                 </div>
 
             </div>
@@ -137,9 +155,10 @@
         </section>
 
 
-        <!-- ========================= -->
-        <!-- PAUSE SCREEN -->
-        <!-- ========================= -->
+
+        <!-- =========================
+             PAUSE SCREEN
+        ========================== -->
 
         <section
             id="pauseScreen"
@@ -163,7 +182,7 @@
 
 
                 <button
-                    id="restartBtn1"
+                    id="restartPauseBtn"
                     class="secondary-btn"
                     type="button"
                 >
@@ -175,9 +194,10 @@
         </section>
 
 
-        <!-- ========================= -->
-        <!-- GAME OVER -->
-        <!-- ========================= -->
+
+        <!-- =========================
+             GAME OVER
+        ========================== -->
 
         <section
             id="gameOverScreen"
@@ -241,9 +261,10 @@
         </section>
 
 
-        <!-- ========================= -->
-        <!-- LEVEL MESSAGE -->
-        <!-- ========================= -->
+
+        <!-- =========================
+             LEVEL MESSAGE
+        ========================== -->
 
         <div
             id="levelMessage"
@@ -253,16 +274,15 @@
         </div>
 
 
-        <!-- ========================= -->
-        <!-- MOBILE CONTROLS -->
-        <!-- ========================= -->
+
+        <!-- =========================
+             MOBILE CONTROLS
+        ========================== -->
 
         <div
             id="mobileControls"
             class="mobile-controls"
         >
-
-            <!-- JOYSTICK -->
 
             <div
                 id="joystick"
@@ -276,8 +296,6 @@
 
             </div>
 
-
-            <!-- DASH -->
 
             <button
                 id="dashBtn"
@@ -298,9 +316,10 @@
     </main>
 
 
-    <!-- ========================= -->
-    <!-- FOOTER -->
-    <!-- ========================= -->
+
+    <!-- =========================
+         FOOTER
+    ========================== -->
 
     <footer>
 
