@@ -1,11 +1,12 @@
 /* =========================================
    PIXELFALL
-   ========================================= */
+   GAME + SOUND ENGINE
+========================================= */
 
 
 /* =========================================
    CANVAS
-   ========================================= */
+========================================= */
 
 const canvas =
     document.getElementById(
@@ -16,19 +17,21 @@ const ctx =
     canvas.getContext("2d");
 
 
-const WIDTH = 1000;
+const GAME_WIDTH = 1000;
 
-const HEIGHT = 562;
+const GAME_HEIGHT = 562;
 
 
-canvas.width = WIDTH;
+canvas.width =
+    GAME_WIDTH;
 
-canvas.height = HEIGHT;
+canvas.height =
+    GAME_HEIGHT;
 
 
 /* =========================================
-   SCREENS
-   ========================================= */
+   ELEMENTS
+========================================= */
 
 const startScreen =
     document.getElementById(
@@ -45,11 +48,6 @@ const gameOverScreen =
         "gameOverScreen"
     );
 
-
-/* =========================================
-   BUTTONS
-   ========================================= */
-
 const startBtn =
     document.getElementById(
         "startBtn"
@@ -65,14 +63,14 @@ const resumeBtn =
         "resumeBtn"
     );
 
+const restartPauseBtn =
+    document.getElementById(
+        "restartPauseBtn"
+    );
+
 const restartBtn =
     document.getElementById(
         "restartBtn"
-    );
-
-const restartBtn1 =
-    document.getElementById(
-        "restartBtn1"
     );
 
 const closeGameBtn =
@@ -80,15 +78,15 @@ const closeGameBtn =
         "closeGameBtn"
     );
 
+const soundBtn =
+    document.getElementById(
+        "soundBtn"
+    );
+
 const dashBtn =
     document.getElementById(
         "dashBtn"
     );
-
-
-/* =========================================
-   HUD
-   ========================================= */
 
 const scoreElement =
     document.getElementById(
@@ -115,11 +113,6 @@ const highScoreElement =
         "highScore"
     );
 
-
-/* =========================================
-   MOBILE CONTROLS
-   ========================================= */
-
 const mobileControls =
     document.getElementById(
         "mobileControls"
@@ -138,7 +131,7 @@ const joystickKnob =
 
 /* =========================================
    GAME STATE
-   ========================================= */
+========================================= */
 
 let gameRunning = false;
 
@@ -158,21 +151,18 @@ let enemyTimer = 0;
 
 let coinTimer = 0;
 
-
-let particles = [];
-
 let enemies = [];
 
 let coinsArray = [];
 
-let powerUps = [];
+let particles = [];
 
 let keys = {};
 
 
 /* =========================================
-   JOYSTICK STATE
-   ========================================= */
+   JOYSTICK
+========================================= */
 
 let joystickActive = false;
 
@@ -184,8 +174,624 @@ let joystickPointerId = null;
 
 
 /* =========================================
+   SOUND ENGINE
+========================================= */
+
+let audioContext = null;
+
+let masterGain = null;
+
+let ambientOscillator = null;
+
+let ambientGain = null;
+
+let soundEnabled =
+    localStorage.getItem(
+        "pixelfallSound"
+    ) !== "off";
+
+
+/* =========================================
+   CREATE AUDIO
+========================================= */
+
+function initAudio() {
+
+    if (audioContext) {
+
+        if (
+            audioContext.state ===
+            "suspended"
+        ) {
+
+            audioContext.resume();
+
+        }
+
+        return;
+
+    }
+
+
+    const AudioContext =
+        window.AudioContext ||
+        window.webkitAudioContext;
+
+
+    if (!AudioContext) {
+
+        console.log(
+            "Web Audio API is not supported."
+        );
+
+        return;
+
+    }
+
+
+    audioContext =
+        new AudioContext();
+
+
+    masterGain =
+        audioContext.createGain();
+
+
+    masterGain.gain.value =
+        soundEnabled
+            ? 0.65
+            : 0;
+
+
+    masterGain.connect(
+        audioContext.destination
+    );
+
+}
+
+
+/* =========================================
+   PLAY TONE
+========================================= */
+
+function playTone(
+    frequency,
+    duration,
+    type = "sine",
+    volume = 0.15,
+    slideTo = null
+) {
+
+    if (!soundEnabled) {
+        return;
+    }
+
+
+    initAudio();
+
+
+    if (!audioContext) {
+        return;
+    }
+
+
+    const oscillator =
+        audioContext.createOscillator();
+
+
+    const gain =
+        audioContext.createGain();
+
+
+    oscillator.type =
+        type;
+
+
+    oscillator.frequency.setValueAtTime(
+        frequency,
+        audioContext.currentTime
+    );
+
+
+    if (
+        slideTo !== null
+    ) {
+
+        oscillator.frequency.linearRampToValueAtTime(
+            slideTo,
+            audioContext.currentTime +
+                duration
+        );
+
+    }
+
+
+    gain.gain.setValueAtTime(
+        0,
+        audioContext.currentTime
+    );
+
+
+    gain.gain.linearRampToValueAtTime(
+        volume,
+        audioContext.currentTime +
+            0.01
+    );
+
+
+    gain.gain.exponentialRampToValueAtTime(
+        0.001,
+        audioContext.currentTime +
+            duration
+    );
+
+
+    oscillator.connect(gain);
+
+    gain.connect(masterGain);
+
+
+    oscillator.start();
+
+
+    oscillator.stop(
+        audioContext.currentTime +
+            duration +
+            0.02
+    );
+
+}
+
+
+/* =========================================
+   COIN SOUND
+========================================= */
+
+function playCoinSound() {
+
+    if (!soundEnabled) {
+        return;
+    }
+
+
+    playTone(
+        700,
+        0.08,
+        "sine",
+        0.12,
+        1000
+    );
+
+
+    setTimeout(
+        function () {
+
+            playTone(
+                1000,
+                0.1,
+                "sine",
+                0.1,
+                1300
+            );
+
+        },
+        55
+    );
+
+}
+
+
+/* =========================================
+   DASH SOUND
+========================================= */
+
+function playDashSound() {
+
+    playTone(
+        180,
+        0.18,
+        "sawtooth",
+        0.12,
+        800
+    );
+
+}
+
+
+/* =========================================
+   HIT SOUND
+========================================= */
+
+function playHitSound() {
+
+    playTone(
+        110,
+        0.22,
+        "square",
+        0.16,
+        45
+    );
+
+
+    setTimeout(
+        function () {
+
+            playTone(
+                70,
+                0.18,
+                "sawtooth",
+                0.1,
+                35
+            );
+
+        },
+        60
+    );
+
+}
+
+
+/* =========================================
+   LIFE LOST SOUND
+========================================= */
+
+function playLifeLostSound() {
+
+    playTone(
+        300,
+        0.18,
+        "square",
+        0.12,
+        100
+    );
+
+
+    setTimeout(
+        function () {
+
+            playTone(
+                150,
+                0.25,
+                "square",
+                0.12,
+                60
+            );
+
+        },
+        90
+    );
+
+}
+
+
+/* =========================================
+   GAME START SOUND
+========================================= */
+
+function playStartSound() {
+
+    playTone(
+        300,
+        0.12,
+        "sine",
+        0.1,
+        500
+    );
+
+
+    setTimeout(
+        function () {
+
+            playTone(
+                500,
+                0.12,
+                "sine",
+                0.1,
+                800
+            );
+
+        },
+        100
+    );
+
+
+    setTimeout(
+        function () {
+
+            playTone(
+                800,
+                0.2,
+                "sine",
+                0.12,
+                1100
+            );
+
+        },
+        200
+    );
+
+}
+
+
+/* =========================================
+   LEVEL UP SOUND
+========================================= */
+
+function playLevelUpSound() {
+
+    playTone(
+        500,
+        0.12,
+        "square",
+        0.1,
+        700
+    );
+
+
+    setTimeout(
+        function () {
+
+            playTone(
+                700,
+                0.12,
+                "square",
+                0.1,
+                950
+            );
+
+        },
+        100
+    );
+
+
+    setTimeout(
+        function () {
+
+            playTone(
+                950,
+                0.25,
+                "square",
+                0.12,
+                1200
+            );
+
+        },
+        200
+    );
+
+}
+
+
+/* =========================================
+   PAUSE SOUND
+========================================= */
+
+function playPauseSound() {
+
+    playTone(
+        400,
+        0.08,
+        "triangle",
+        0.08,
+        250
+    );
+
+}
+
+
+/* =========================================
+   GAME OVER SOUND
+========================================= */
+
+function playGameOverSound() {
+
+    playTone(
+        400,
+        0.25,
+        "sawtooth",
+        0.13,
+        220
+    );
+
+
+    setTimeout(
+        function () {
+
+            playTone(
+                220,
+                0.3,
+                "sawtooth",
+                0.12,
+                90
+            );
+
+        },
+        180
+    );
+
+
+    setTimeout(
+        function () {
+
+            playTone(
+                100,
+                0.45,
+                "sawtooth",
+                0.1,
+                45
+            );
+
+        },
+        400
+    );
+
+}
+
+
+/* =========================================
+   AMBIENT SOUND
+========================================= */
+
+function startAmbientSound() {
+
+    if (
+        !soundEnabled ||
+        !audioContext ||
+        ambientOscillator
+    ) {
+
+        return;
+
+    }
+
+
+    ambientOscillator =
+        audioContext.createOscillator();
+
+
+    ambientGain =
+        audioContext.createGain();
+
+
+    ambientOscillator.type =
+        "sine";
+
+
+    ambientOscillator.frequency.value =
+        55;
+
+
+    ambientGain.gain.value =
+        0.018;
+
+
+    ambientOscillator.connect(
+        ambientGain
+    );
+
+
+    ambientGain.connect(
+        masterGain
+    );
+
+
+    ambientOscillator.start();
+
+}
+
+
+function stopAmbientSound() {
+
+    if (
+        ambientOscillator
+    ) {
+
+        try {
+
+            ambientOscillator.stop();
+
+        } catch (error) {
+
+            console.log(error);
+
+        }
+
+    }
+
+
+    ambientOscillator = null;
+
+    ambientGain = null;
+
+}
+
+
+/* =========================================
+   SOUND TOGGLE
+========================================= */
+
+function toggleSound() {
+
+    soundEnabled =
+        !soundEnabled;
+
+
+    localStorage.setItem(
+        "pixelfallSound",
+        soundEnabled
+            ? "on"
+            : "off"
+    );
+
+
+    updateSoundButton();
+
+
+    if (soundEnabled) {
+
+        initAudio();
+
+
+        if (
+            masterGain
+        ) {
+
+            masterGain.gain.setTargetAtTime(
+                0.65,
+                audioContext.currentTime,
+                0.03
+            );
+
+        }
+
+
+        playTone(
+            600,
+            0.12,
+            "sine",
+            0.1,
+            900
+        );
+
+
+        startAmbientSound();
+
+    } else {
+
+        if (
+            masterGain &&
+            audioContext
+        ) {
+
+            masterGain.gain.setTargetAtTime(
+                0,
+                audioContext.currentTime,
+                0.03
+            );
+
+        }
+
+
+        stopAmbientSound();
+
+    }
+
+}
+
+
+function updateSoundButton() {
+
+    soundBtn.textContent =
+        soundEnabled
+            ? "🔊"
+            : "🔇";
+
+}
+
+
+/* =========================================
    HIGH SCORE
-   ========================================= */
+========================================= */
 
 let highScore =
     Number(
@@ -201,13 +807,14 @@ highScoreElement.textContent =
 
 /* =========================================
    PLAYER
-   ========================================= */
+========================================= */
 
 const player = {
 
     x: 120,
 
-    y: HEIGHT / 2,
+    y:
+        GAME_HEIGHT / 2,
 
     width: 38,
 
@@ -229,12 +836,12 @@ const player = {
 
 
 /* =========================================
-   KEYBOARD INPUT
-   ========================================= */
+   KEYBOARD
+========================================= */
 
 window.addEventListener(
     "keydown",
-    event => {
+    function (event) {
 
         keys[
             event.key.toLowerCase()
@@ -242,7 +849,8 @@ window.addEventListener(
 
 
         if (
-            event.code === "Space"
+            event.code ===
+            "Space"
         ) {
 
             event.preventDefault();
@@ -253,8 +861,8 @@ window.addEventListener(
 
 
         if (
-            event.key.toLowerCase()
-            === "p"
+            event.key.toLowerCase() ===
+            "p"
         ) {
 
             togglePause();
@@ -267,7 +875,7 @@ window.addEventListener(
 
 window.addEventListener(
     "keyup",
-    event => {
+    function (event) {
 
         keys[
             event.key.toLowerCase()
@@ -279,7 +887,7 @@ window.addEventListener(
 
 /* =========================================
    BUTTON EVENTS
-   ========================================= */
+========================================= */
 
 startBtn.addEventListener(
     "click",
@@ -299,13 +907,13 @@ resumeBtn.addEventListener(
 );
 
 
-restartBtn.addEventListener(
+restartPauseBtn.addEventListener(
     "click",
     startGame
 );
 
 
-restartBtn1.addEventListener(
+restartBtn.addEventListener(
     "click",
     startGame
 );
@@ -317,13 +925,15 @@ closeGameBtn.addEventListener(
 );
 
 
-/* =========================================
-   MOBILE DASH
-   ========================================= */
+soundBtn.addEventListener(
+    "click",
+    toggleSound
+);
+
 
 dashBtn.addEventListener(
     "pointerdown",
-    event => {
+    function (event) {
 
         event.preventDefault();
 
@@ -335,25 +945,46 @@ dashBtn.addEventListener(
 
 /* =========================================
    START GAME
-   ========================================= */
+========================================= */
 
 async function startGame() {
 
     /*
-     * On supported mobile browsers:
-     * enter fullscreen first.
-     *
-     * Orientation lock generally works
-     * only after a user gesture.
-     */
+       Audio must be initialized
+       from a user interaction.
+    */
+
+    initAudio();
+
+
+    if (
+        audioContext &&
+        audioContext.state ===
+        "suspended"
+    ) {
+
+        await audioContext.resume();
+
+    }
+
+
+    playStartSound();
+
+
+    startAmbientSound();
+
+
+    /*
+       FULLSCREEN
+    */
 
     try {
 
         if (
-            window.innerWidth <= 900 &&
-            !document.fullscreenElement &&
-            document.documentElement
-                .requestFullscreen
+            document
+                .documentElement
+                .requestFullscreen &&
+            !document.fullscreenElement
         ) {
 
             await document
@@ -365,7 +996,7 @@ async function startGame() {
     } catch (error) {
 
         console.log(
-            "Fullscreen unavailable:",
+            "Fullscreen not available.",
             error
         );
 
@@ -373,13 +1004,12 @@ async function startGame() {
 
 
     /*
-     * Request landscape mode.
-     */
+       LANDSCAPE
+    */
 
     try {
 
         if (
-            window.innerWidth <= 900 &&
             screen.orientation &&
             screen.orientation.lock
         ) {
@@ -393,16 +1023,14 @@ async function startGame() {
     } catch (error) {
 
         console.log(
-            "Landscape lock unavailable:",
+            "Landscape lock not available.",
             error
         );
 
     }
 
 
-    /* ==========================
-       RESET GAME
-       ========================== */
+    /* RESET */
 
     score = 0;
 
@@ -412,12 +1040,13 @@ async function startGame() {
 
     level = 1;
 
+    enemyTimer = 0;
+
+    coinTimer = 0;
 
     enemies = [];
 
     coinsArray = [];
-
-    powerUps = [];
 
     particles = [];
 
@@ -425,21 +1054,20 @@ async function startGame() {
     player.x = 120;
 
     player.y =
-        HEIGHT / 2;
-
-    player.invincible = 0;
+        GAME_HEIGHT / 2;
 
     player.dashTime = 0;
 
     player.dashCooldown = 0;
 
+    player.invincible = 0;
+
+
+    joystickActive = false;
 
     joystickX = 0;
 
     joystickY = 0;
-
-    joystickActive = false;
-
 
     resetJoystick();
 
@@ -448,10 +1076,6 @@ async function startGame() {
 
     paused = false;
 
-
-    /* ==========================
-       SCREENS
-       ========================== */
 
     startScreen.classList.add(
         "hidden"
@@ -468,19 +1092,7 @@ async function startGame() {
     );
 
 
-    /* ==========================
-       MOBILE CONTROLS
-       ========================== */
-
-    if (
-        window.innerWidth <= 900
-    ) {
-
-        mobileControls.style.display =
-            "block";
-
-    }
-
+    updateMobileControls();
 
     updateHUD();
 
@@ -498,7 +1110,7 @@ async function startGame() {
 
 /* =========================================
    GAME LOOP
-   ========================================= */
+========================================= */
 
 function gameLoop(time) {
 
@@ -539,7 +1151,7 @@ function gameLoop(time) {
 
 /* =========================================
    UPDATE
-   ========================================= */
+========================================= */
 
 function update(dt) {
 
@@ -552,8 +1164,6 @@ function update(dt) {
     updateEnemies(dt);
 
     updateCoins(dt);
-
-    updatePowerUps(dt);
 
     updateParticles(dt);
 
@@ -583,8 +1193,8 @@ function update(dt) {
 
 
 /* =========================================
-   PLAYER MOVEMENT
-   ========================================= */
+   PLAYER
+========================================= */
 
 function updatePlayer(dt) {
 
@@ -592,8 +1202,6 @@ function updatePlayer(dt) {
 
     let dy = 0;
 
-
-    /* KEYBOARD */
 
     if (
         keys["w"] ||
@@ -635,9 +1243,9 @@ function updatePlayer(dt) {
     }
 
 
-    /* MOBILE JOYSTICK */
-
-    if (joystickActive) {
+    if (
+        joystickActive
+    ) {
 
         dx += joystickX;
 
@@ -646,20 +1254,20 @@ function updatePlayer(dt) {
     }
 
 
-    /* NORMALIZE */
-
-    const length =
+    const distance =
         Math.sqrt(
             dx * dx +
             dy * dy
         );
 
 
-    if (length > 1) {
+    if (
+        distance > 1
+    ) {
 
-        dx /= length;
+        dx /= distance;
 
-        dy /= length;
+        dy /= distance;
 
     }
 
@@ -667,8 +1275,6 @@ function updatePlayer(dt) {
     let speed =
         player.speed;
 
-
-    /* DASH */
 
     if (
         player.dashTime > 0
@@ -694,14 +1300,12 @@ function updatePlayer(dt) {
         dt;
 
 
-    /* BOUNDARIES */
-
     player.x =
         Math.max(
             20,
 
             Math.min(
-                WIDTH -
+                GAME_WIDTH -
                     player.width -
                     20,
 
@@ -712,10 +1316,10 @@ function updatePlayer(dt) {
 
     player.y =
         Math.max(
-            70,
+            60,
 
             Math.min(
-                HEIGHT -
+                GAME_HEIGHT -
                     player.height -
                     20,
 
@@ -732,7 +1336,7 @@ function updatePlayer(dt) {
 
 /* =========================================
    DASH
-   ========================================= */
+========================================= */
 
 function dash() {
 
@@ -763,26 +1367,25 @@ function dash() {
         1.5;
 
 
-    createParticles(
+    playDashSound();
 
+
+    createParticles(
         player.x +
             player.width / 2,
 
         player.y +
             player.height / 2,
 
-        18,
-
-        "#8b5cf6"
-
+        18
     );
 
 }
 
 
 /* =========================================
-   ENEMY SPAWNING
-   ========================================= */
+   ENEMIES
+========================================= */
 
 function spawnEnemies(dt) {
 
@@ -802,8 +1405,8 @@ function spawnEnemies(dt) {
         Math.max(
             0.35,
 
-            1.25 -
-                level * 0.07
+            1.2 -
+                level * 0.06
         );
 
 
@@ -812,28 +1415,18 @@ function spawnEnemies(dt) {
         Math.random() * 20;
 
 
-    const y =
-        80 +
-        Math.random() *
-            (
-                HEIGHT -
-                130
-            );
-
-
-    const speed =
-        90 +
-        Math.random() * 70 +
-        level * 8;
-
-
     enemies.push({
 
         x:
-            WIDTH +
-            size,
+            GAME_WIDTH + size,
 
-        y: y,
+        y:
+            70 +
+            Math.random() *
+            (
+                GAME_HEIGHT -
+                130
+            ),
 
         width:
             size,
@@ -842,17 +1435,12 @@ function spawnEnemies(dt) {
             size,
 
         speed:
-            speed,
+            90 +
+            Math.random() * 80 +
+            level * 8,
 
-        type:
-            Math.random() < 0.2
-                ? "fast"
-                : "normal",
-
-        phase:
-            Math.random() *
-            Math.PI *
-            2
+        wave:
+            Math.random() * 10
 
     });
 
@@ -861,35 +1449,28 @@ function spawnEnemies(dt) {
 
 /* =========================================
    ENEMY UPDATE
-   ========================================= */
+========================================= */
 
 function updateEnemies(dt) {
 
     enemies.forEach(
-        enemy => {
+        function (enemy) {
 
             enemy.x -=
                 enemy.speed *
                 dt;
 
 
-            enemy.phase +=
+            enemy.wave +=
                 dt * 4;
 
 
-            if (
-                enemy.type ===
-                "fast"
-            ) {
-
-                enemy.y +=
-                    Math.sin(
-                        enemy.phase
-                    ) *
-                    40 *
-                    dt;
-
-            }
+            enemy.y +=
+                Math.sin(
+                    enemy.wave
+                ) *
+                20 *
+                dt;
 
         }
     );
@@ -897,10 +1478,11 @@ function updateEnemies(dt) {
 
     enemies =
         enemies.filter(
-            enemy => {
+            function (enemy) {
 
                 if (
-                    enemy.x < -100
+                    enemy.x <
+                    -100
                 ) {
 
                     score += 5;
@@ -919,8 +1501,8 @@ function updateEnemies(dt) {
 
 
 /* =========================================
-   COIN SPAWN
-   ========================================= */
+   COINS
+========================================= */
 
 function spawnCoins(dt) {
 
@@ -942,15 +1524,15 @@ function spawnCoins(dt) {
     coinsArray.push({
 
         x:
-            WIDTH + 30,
+            GAME_WIDTH + 20,
 
         y:
-            80 +
+            70 +
             Math.random() *
-                (
-                    HEIGHT -
-                    140
-                ),
+            (
+                GAME_HEIGHT -
+                140
+            ),
 
         radius: 10,
 
@@ -961,17 +1543,15 @@ function spawnCoins(dt) {
 }
 
 
-/* =========================================
-   COIN UPDATE
-   ========================================= */
-
 function updateCoins(dt) {
 
     coinsArray.forEach(
-        coin => {
+        function (coin) {
 
             coin.x -=
-                170 * dt;
+                170 *
+                dt;
+
 
             coin.rotation +=
                 dt * 5;
@@ -982,36 +1562,13 @@ function updateCoins(dt) {
 
     coinsArray =
         coinsArray.filter(
-            coin =>
-                coin.x > -30
-        );
+            function (coin) {
 
-}
+                return (
+                    coin.x > -30
+                );
 
-
-/* =========================================
-   POWER UPS
-   ========================================= */
-
-function updatePowerUps(dt) {
-
-    powerUps.forEach(
-        power => {
-
-            power.x -=
-                160 * dt;
-
-            power.rotation +=
-                dt * 4;
-
-        }
-    );
-
-
-    powerUps =
-        powerUps.filter(
-            power =>
-                power.x > -50
+            }
         );
 
 }
@@ -1019,7 +1576,7 @@ function updatePowerUps(dt) {
 
 /* =========================================
    LEVEL
-   ========================================= */
+========================================= */
 
 function updateLevel() {
 
@@ -1037,16 +1594,15 @@ function updateLevel() {
             newLevel;
 
 
+        playLevelUpSound();
+
+
         createParticles(
+            GAME_WIDTH / 2,
 
-            WIDTH / 2,
+            GAME_HEIGHT / 2,
 
-            HEIGHT / 2,
-
-            50,
-
-            "#22d3ee"
-
+            40
         );
 
     }
@@ -1056,146 +1612,158 @@ function updateLevel() {
 
 /* =========================================
    COLLISIONS
-   ========================================= */
+========================================= */
 
 function checkCollisions() {
 
-    enemies.forEach(
-        (enemy, index) => {
+    for (
+        let i =
+            enemies.length - 1;
+
+        i >= 0;
+
+        i--
+    ) {
+
+        const enemy =
+            enemies[i];
+
+
+        if (
+            player.invincible <= 0 &&
+            isColliding(
+                player,
+                enemy
+            )
+        ) {
+
+            enemies.splice(
+                i,
+                1
+            );
+
+
+            lives--;
+
+
+            player.invincible =
+                1.2;
+
+
+            playHitSound();
+
+            playLifeLostSound();
+
+
+            createParticles(
+                player.x +
+                    player.width / 2,
+
+                player.y +
+                    player.height / 2,
+
+                25
+            );
+
+
+            updateHUD();
+
 
             if (
-
-                player.invincible <= 0 &&
-
-                isColliding(
-                    player,
-                    enemy
-                )
-
+                lives <= 0
             ) {
 
-                enemies.splice(
-                    index,
-                    1
-                );
+                endGame();
 
-
-                lives--;
-
-
-                player.invincible =
-                    1.2;
-
-
-                createParticles(
-
-                    player.x +
-                        player.width / 2,
-
-                    player.y +
-                        player.height / 2,
-
-                    25,
-
-                    "#ef4444"
-
-                );
-
-
-                updateHUD();
-
-
-                if (
-                    lives <= 0
-                ) {
-
-                    endGame();
-
-                }
+                return;
 
             }
 
         }
-    );
+
+    }
 
 
-    coinsArray.forEach(
-        (coin, index) => {
+    for (
+        let i =
+            coinsArray.length - 1;
 
-            const distance =
-                Math.hypot(
+        i >= 0;
 
-                    player.x +
-                        player.width / 2 -
-                        coin.x,
+        i--
+    ) {
 
-                    player.y +
-                        player.height / 2 -
-                        coin.y
-
-                );
+        const coin =
+            coinsArray[i];
 
 
-            if (
-                distance < 28
-            ) {
+        const distance =
+            Math.hypot(
 
-                coinsArray.splice(
-                    index,
-                    1
-                );
-
-
-                coins++;
-
-                score += 25;
-
-
-                createParticles(
-
+                player.x +
+                    player.width / 2 -
                     coin.x,
 
-                    coin.y,
+                player.y +
+                    player.height / 2 -
+                    coin.y
 
-                    15,
-
-                    "#facc15"
-
-                );
+            );
 
 
-                updateHUD();
+        if (
+            distance < 28
+        ) {
 
-            }
+            coinsArray.splice(
+                i,
+                1
+            );
+
+
+            coins++;
+
+
+            score += 25;
+
+
+            playCoinSound();
+
+
+            createParticles(
+                coin.x,
+                coin.y,
+                15
+            );
+
+
+            updateHUD();
 
         }
-    );
+
+    }
 
 }
 
 
 /* =========================================
    COLLISION HELPER
-   ========================================= */
+========================================= */
 
 function isColliding(a, b) {
 
     return (
 
         a.x <
-            b.x +
-            b.width &&
+            b.x + b.width &&
 
-        a.x +
-            a.width >
+        a.x + a.width >
             b.x &&
 
         a.y <
-            b.y +
-            b.height &&
+            b.y + b.height &&
 
-        a.y +
-            a.height >
+        a.y + a.height >
             b.y
 
     );
@@ -1205,18 +1773,19 @@ function isColliding(a, b) {
 
 /* =========================================
    PARTICLES
-   ========================================= */
+========================================= */
 
 function createParticles(
     x,
     y,
-    amount,
-    color
+    amount
 ) {
 
     for (
         let i = 0;
+
         i < amount;
+
         i++
     ) {
 
@@ -1253,11 +1822,7 @@ function createParticles(
 
             size:
                 2 +
-                Math.random() *
-                4,
-
-            color:
-                color
+                Math.random() * 4
 
         });
 
@@ -1266,14 +1831,10 @@ function createParticles(
 }
 
 
-/* =========================================
-   PARTICLE UPDATE
-   ========================================= */
-
 function updateParticles(dt) {
 
     particles.forEach(
-        particle => {
+        function (particle) {
 
             particle.x +=
                 particle.vx *
@@ -1302,8 +1863,13 @@ function updateParticles(dt) {
 
     particles =
         particles.filter(
-            particle =>
-                particle.life > 0
+            function (particle) {
+
+                return (
+                    particle.life > 0
+                );
+
+            }
         );
 
 }
@@ -1311,7 +1877,7 @@ function updateParticles(dt) {
 
 /* =========================================
    DRAW
-   ========================================= */
+========================================= */
 
 function draw() {
 
@@ -1321,22 +1887,20 @@ function draw() {
 
     drawCoins();
 
-    drawPowerUps();
-
     drawEnemies();
 
     drawPlayer();
 
     drawParticles();
 
-    drawDashIndicator();
+    drawDashBar();
 
 }
 
 
 /* =========================================
    BACKGROUND
-   ========================================= */
+========================================= */
 
 function drawBackground() {
 
@@ -1344,8 +1908,8 @@ function drawBackground() {
         ctx.createLinearGradient(
             0,
             0,
-            WIDTH,
-            HEIGHT
+            GAME_WIDTH,
+            GAME_HEIGHT
         );
 
 
@@ -1374,41 +1938,42 @@ function drawBackground() {
     ctx.fillRect(
         0,
         0,
-        WIDTH,
-        HEIGHT
+        GAME_WIDTH,
+        GAME_HEIGHT
     );
 
 
     for (
         let i = 0;
-        i < 70;
+
+        i < 80;
+
         i++
     ) {
 
         const x =
-            (i * 137) %
-            WIDTH;
+            (
+                i * 137
+            ) %
+            GAME_WIDTH;
 
 
         const y =
-            (i * 71) %
-            HEIGHT;
-
-
-        const size =
-            1 +
-            (i % 2);
+            (
+                i * 71
+            ) %
+            GAME_HEIGHT;
 
 
         ctx.fillStyle =
-            "rgba(255,255,255,0.25)";
+            "rgba(255,255,255,0.22)";
 
 
         ctx.fillRect(
             x,
             y,
-            size,
-            size
+            2,
+            2
         );
 
     }
@@ -1418,7 +1983,7 @@ function drawBackground() {
 
 /* =========================================
    GRID
-   ========================================= */
+========================================= */
 
 function drawGrid() {
 
@@ -1431,21 +1996,26 @@ function drawGrid() {
 
     for (
         let x = 0;
-        x < WIDTH;
+
+        x < GAME_WIDTH;
+
         x += 50
     ) {
 
         ctx.beginPath();
+
 
         ctx.moveTo(
             x,
             0
         );
 
+
         ctx.lineTo(
             x,
-            HEIGHT
+            GAME_HEIGHT
         );
+
 
         ctx.stroke();
 
@@ -1454,21 +2024,26 @@ function drawGrid() {
 
     for (
         let y = 0;
-        y < HEIGHT;
+
+        y < GAME_HEIGHT;
+
         y += 50
     ) {
 
         ctx.beginPath();
+
 
         ctx.moveTo(
             0,
             y
         );
 
+
         ctx.lineTo(
-            WIDTH,
+            GAME_WIDTH,
             y
         );
+
 
         ctx.stroke();
 
@@ -1479,30 +2054,28 @@ function drawGrid() {
 
 /* =========================================
    PLAYER DRAW
-   ========================================= */
+========================================= */
 
 function drawPlayer() {
 
-    const x =
-        player.x;
-
-    const y =
-        player.y;
-
-
     if (
-
         player.invincible > 0 &&
-
         Math.floor(
             player.invincible * 10
         ) % 2 === 0
-
     ) {
 
         return;
 
     }
+
+
+    const x =
+        player.x;
+
+
+    const y =
+        player.y;
 
 
     ctx.save();
@@ -1513,7 +2086,7 @@ function drawPlayer() {
 
 
     ctx.shadowBlur =
-        25 +
+        20 +
         Math.sin(
             player.glow
         ) * 5;
@@ -1527,7 +2100,6 @@ function drawPlayer() {
 
 
     ctx.arc(
-
         x +
             player.width / 2,
 
@@ -1538,67 +2110,57 @@ function drawPlayer() {
         Math.PI,
 
         0
-
     );
 
 
     ctx.lineTo(
-
         x +
             player.width,
 
         y +
             player.height
-
     );
 
 
     ctx.lineTo(
-
         x +
             player.width * 0.75,
 
         y +
             player.height -
             7
-
     );
 
 
     ctx.lineTo(
-
         x +
-            player.width * 0.5,
+            player.width / 2,
 
         y +
             player.height
-
     );
 
 
     ctx.lineTo(
-
         x +
             player.width * 0.25,
 
         y +
             player.height -
             7
-
     );
 
 
     ctx.lineTo(
-
         x,
 
         y +
             player.height
-
     );
 
 
     ctx.closePath();
+
 
     ctx.fill();
 
@@ -1612,38 +2174,30 @@ function drawPlayer() {
 
     ctx.beginPath();
 
+
     ctx.arc(
-
         x + 13,
-
         y + 17,
-
         3,
-
         0,
-
         Math.PI * 2
-
     );
+
 
     ctx.fill();
 
 
     ctx.beginPath();
 
+
     ctx.arc(
-
         x + 25,
-
         y + 17,
-
         3,
-
         0,
-
         Math.PI * 2
-
     );
+
 
     ctx.fill();
 
@@ -1655,20 +2209,18 @@ function drawPlayer() {
 
 /* =========================================
    ENEMY DRAW
-   ========================================= */
+========================================= */
 
 function drawEnemies() {
 
     enemies.forEach(
-        enemy => {
+        function (enemy) {
 
             ctx.save();
 
 
             ctx.shadowColor =
-                enemy.type === "fast"
-                    ? "#22d3ee"
-                    : "#ef4444";
+                "#ef4444";
 
 
             ctx.shadowBlur =
@@ -1676,9 +2228,7 @@ function drawEnemies() {
 
 
             ctx.fillStyle =
-                enemy.type === "fast"
-                    ? "#22d3ee"
-                    : "#ef4444";
+                "#ef4444";
 
 
             ctx.beginPath();
@@ -1751,12 +2301,12 @@ function drawEnemies() {
 
 /* =========================================
    COIN DRAW
-   ========================================= */
+========================================= */
 
 function drawCoins() {
 
     coinsArray.forEach(
-        coin => {
+        function (coin) {
 
             ctx.save();
 
@@ -1788,17 +2338,11 @@ function drawCoins() {
 
 
             ctx.arc(
-
                 0,
-
                 0,
-
                 coin.radius,
-
                 0,
-
                 Math.PI * 2
-
             );
 
 
@@ -1840,64 +2384,13 @@ function drawCoins() {
 
 
 /* =========================================
-   POWER-UP DRAW
-   ========================================= */
-
-function drawPowerUps() {
-
-    powerUps.forEach(
-        power => {
-
-            ctx.save();
-
-
-            ctx.translate(
-                power.x,
-                power.y
-            );
-
-
-            ctx.rotate(
-                power.rotation
-            );
-
-
-            ctx.shadowColor =
-                "#22d3ee";
-
-
-            ctx.shadowBlur =
-                20;
-
-
-            ctx.fillStyle =
-                "#22d3ee";
-
-
-            ctx.fillRect(
-                -12,
-                -12,
-                24,
-                24
-            );
-
-
-            ctx.restore();
-
-        }
-    );
-
-}
-
-
-/* =========================================
-   PARTICLE DRAW
-   ========================================= */
+   PARTICLES DRAW
+========================================= */
 
 function drawParticles() {
 
     particles.forEach(
-        particle => {
+        function (particle) {
 
             ctx.globalAlpha =
                 Math.max(
@@ -1907,7 +2400,7 @@ function drawParticles() {
 
 
             ctx.fillStyle =
-                particle.color;
+                "#a78bfa";
 
 
             ctx.beginPath();
@@ -1940,18 +2433,18 @@ function drawParticles() {
 
 
 /* =========================================
-   DASH INDICATOR
-   ========================================= */
+   DASH BAR
+========================================= */
 
-function drawDashIndicator() {
-
-    const width = 150;
-
-    const height = 7;
+function drawDashBar() {
 
     const x = 20;
 
     const y = 25;
+
+    const width = 150;
+
+    const height = 7;
 
 
     ctx.fillStyle =
@@ -1966,14 +2459,14 @@ function drawDashIndicator() {
     );
 
 
-    let percentage = 1;
+    let progress = 1;
 
 
     if (
         player.dashCooldown > 0
     ) {
 
-        percentage =
+        progress =
             1 -
             player.dashCooldown /
             1.5;
@@ -1992,7 +2485,7 @@ function drawDashIndicator() {
         y,
 
         width *
-            percentage,
+            progress,
 
         height
 
@@ -2018,7 +2511,7 @@ function drawDashIndicator() {
 
 /* =========================================
    HUD
-   ========================================= */
+========================================= */
 
 function updateHUD() {
 
@@ -2038,7 +2531,7 @@ function updateHUD() {
 
 /* =========================================
    PAUSE
-   ========================================= */
+========================================= */
 
 function togglePause() {
 
@@ -2051,6 +2544,9 @@ function togglePause() {
 
     paused =
         !paused;
+
+
+    playPauseSound();
 
 
     if (paused) {
@@ -2076,7 +2572,7 @@ function togglePause() {
 
 /* =========================================
    GAME OVER
-   ========================================= */
+========================================= */
 
 function endGame() {
 
@@ -2085,8 +2581,10 @@ function endGame() {
     paused = false;
 
 
-    mobileControls.style.display =
-        "none";
+    stopAmbientSound();
+
+
+    playGameOverSound();
 
 
     if (
@@ -2099,7 +2597,7 @@ function endGame() {
 
         localStorage.setItem(
             "pixelfallHighScore",
-            highScore
+            String(highScore)
         );
 
     }
@@ -2117,12 +2615,15 @@ function endGame() {
         "hidden"
     );
 
+
+    updateMobileControls();
+
 }
 
 
 /* =========================================
    CLOSE GAME
-   ========================================= */
+========================================= */
 
 async function closeGame() {
 
@@ -2131,15 +2632,12 @@ async function closeGame() {
     paused = false;
 
 
-    mobileControls.style.display =
-        "none";
+    stopAmbientSound();
 
 
     enemies = [];
 
     coinsArray = [];
-
-    powerUps = [];
 
     particles = [];
 
@@ -2156,7 +2654,7 @@ async function closeGame() {
     player.x = 120;
 
     player.y =
-        HEIGHT / 2;
+        GAME_HEIGHT / 2;
 
 
     resetJoystick();
@@ -2180,14 +2678,8 @@ async function closeGame() {
     updateHUD();
 
 
-    drawBackground();
+    draw();
 
-    drawGrid();
-
-
-    /*
-     * Leave fullscreen when supported.
-     */
 
     try {
 
@@ -2203,16 +2695,12 @@ async function closeGame() {
     } catch (error) {
 
         console.log(
-            "Could not exit fullscreen:",
+            "Could not exit fullscreen.",
             error
         );
 
     }
 
-
-    /*
-     * Unlock orientation when supported.
-     */
 
     try {
 
@@ -2228,31 +2716,34 @@ async function closeGame() {
     } catch (error) {
 
         console.log(
-            "Orientation unlock unavailable:",
+            "Could not unlock orientation.",
             error
         );
 
     }
 
+
+    updateMobileControls();
+
 }
 
 
 /* =========================================
-   JOYSTICK DOWN
-   ========================================= */
+   JOYSTICK
+========================================= */
 
 joystick.addEventListener(
     "pointerdown",
-    event => {
+    function (event) {
 
         event.preventDefault();
 
 
+        joystickActive = true;
+
+
         joystickPointerId =
             event.pointerId;
-
-
-        joystickActive = true;
 
 
         try {
@@ -2274,17 +2765,12 @@ joystick.addEventListener(
 );
 
 
-/* =========================================
-   JOYSTICK MOVE
-   ========================================= */
-
 joystick.addEventListener(
     "pointermove",
-    event => {
+    function (event) {
 
         if (
-            event.pointerId !==
-            joystickPointerId
+            !joystickActive
         ) {
 
             return;
@@ -2292,7 +2778,10 @@ joystick.addEventListener(
         }
 
 
-        if (!joystickActive) {
+        if (
+            event.pointerId !==
+            joystickPointerId
+        ) {
 
             return;
 
@@ -2308,13 +2797,9 @@ joystick.addEventListener(
 );
 
 
-/* =========================================
-   JOYSTICK UP
-   ========================================= */
-
 joystick.addEventListener(
     "pointerup",
-    event => {
+    function (event) {
 
         if (
             event.pointerId !==
@@ -2332,42 +2817,15 @@ joystick.addEventListener(
 );
 
 
-/* =========================================
-   JOYSTICK CANCEL
-   ========================================= */
-
 joystick.addEventListener(
     "pointercancel",
-    () => {
-
-        stopJoystick();
-
-    }
+    stopJoystick
 );
 
 
 /* =========================================
-   STOP JOYSTICK
-   ========================================= */
-
-function stopJoystick() {
-
-    joystickActive = false;
-
-    joystickPointerId = null;
-
-    joystickX = 0;
-
-    joystickY = 0;
-
-    resetJoystick();
-
-}
-
-
-/* =========================================
    UPDATE JOYSTICK
-   ========================================= */
+========================================= */
 
 function updateJoystick(event) {
 
@@ -2397,7 +2855,7 @@ function updateJoystick(event) {
 
     const maxDistance =
         rect.width / 2 -
-        24;
+        22;
 
 
     const distance =
@@ -2446,8 +2904,27 @@ function updateJoystick(event) {
 
 
 /* =========================================
+   STOP JOYSTICK
+========================================= */
+
+function stopJoystick() {
+
+    joystickActive = false;
+
+    joystickPointerId = null;
+
+    joystickX = 0;
+
+    joystickY = 0;
+
+    resetJoystick();
+
+}
+
+
+/* =========================================
    RESET JOYSTICK
-   ========================================= */
+========================================= */
 
 function resetJoystick() {
 
@@ -2458,37 +2935,88 @@ function resetJoystick() {
 
 
 /* =========================================
-   HANDLE RESIZE / ORIENTATION
-   ========================================= */
+   MOBILE CONTROLS
+========================================= */
+
+function updateMobileControls() {
+
+    const touchDevice =
+        window.matchMedia(
+            "(pointer: coarse)"
+        ).matches;
+
+
+    const landscape =
+        window.matchMedia(
+            "(orientation: landscape)"
+        ).matches;
+
+
+    if (
+        gameRunning &&
+        touchDevice &&
+        landscape
+    ) {
+
+        mobileControls.style.display =
+            "block";
+
+    } else {
+
+        mobileControls.style.display =
+            "none";
+
+    }
+
+}
+
+
+/* =========================================
+   RESIZE
+========================================= */
 
 window.addEventListener(
     "resize",
-    () => {
+    function () {
 
-        /*
-         * When the phone rotates,
-         * make sure the game canvas
-         * remains correctly displayed.
-         */
+        setTimeout(
+            updateMobileControls,
+            100
+        );
 
-        if (
-            window.innerWidth > 900
-        ) {
+    }
+);
 
-            mobileControls.style.display =
-                "none";
 
-        } else if (
-            gameRunning &&
-            window.matchMedia(
-                "(orientation: landscape)"
-            ).matches
-        ) {
+/* =========================================
+   ORIENTATION
+========================================= */
 
-            mobileControls.style.display =
-                "block";
+window.addEventListener(
+    "orientationchange",
+    function () {
 
-        }
+        setTimeout(
+            updateMobileControls,
+            300
+        );
+
+    }
+);
+
+
+/* =========================================
+   FULLSCREEN
+========================================= */
+
+document.addEventListener(
+    "fullscreenchange",
+    function () {
+
+        setTimeout(
+            updateMobileControls,
+            200
+        );
 
     }
 );
@@ -2496,14 +3024,12 @@ window.addEventListener(
 
 /* =========================================
    INITIALIZE
-   ========================================= */
+========================================= */
 
-mobileControls.style.display =
-    "none";
-
-
-drawBackground();
-
-drawGrid();
+updateSoundButton();
 
 updateHUD();
+
+updateMobileControls();
+
+draw();
