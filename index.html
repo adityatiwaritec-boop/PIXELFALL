@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PIXELFALL</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <div class="game-wrapper">
+
+        <header class="topbar">
+            <div class="logo">
+                <span>PIXEL</span>FALL
+            </div>
+
+            <div class="stats">
+                <div>⭐ <span id="score">0</span></div>
+                <div>💎 <span id="coins">0</span></div>
+                <div>❤️ <span id="lives">3</span></div>
+            </div>
+
+            <button id="pauseBtn" class="pause-btn">Ⅱ</button>
+        </header>
+
+        <main class="game-container">
+
+            <canvas id="gameCanvas"></canvas>
+
+            <!-- Start Screen -->
+            <section id="startScreen" class="overlay">
+                <div class="menu-card">
+                    <div class="ghost-logo">👻</div>
+                    <h1>PIXEL<span>FALL</span></h1>
+                    <p>Survive the darkness.</p>
+
+                    <button id="startBtn" class="main-btn">
+                        PLAY GAME
+                    </button>
+
+                    <div class="controls">
+                        <p><b>W A S D</b> / <b>ARROWS</b> — Move</p>
+                        <p><b>SPACE</b> — Dash</p>
+                        <p><b>P</b> — Pause</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Pause Screen -->
+            <section id="pauseScreen" class="overlay hidden">
+                <div class="menu-card">
+                    <h2>GAME PAUSED</h2>
+                    <button id="resumeBtn" class="main-btn">
+                        RESUME
+                    </button>
+                    <button id="restartBtn1" class="secondary-btn">
+                        RESTART
+                    </button>
+                </div>
+            </section>
+
+            <!-- Game Over -->
+            <section id="gameOverScreen" class="overlay hidden">
+                <div class="menu-card">
+                    <div class="ghost-logo">💀</div>
+
+                    <h2>GAME OVER</h2>
+
+                    <p>Your Score</p>
+                    <div id="finalScore" class="final-score">0</div>
+
+                    <p>High Score: <b id="highScore">0</b></p>
+
+                    <button id="restartBtn" class="main-btn">
+                        PLAY AGAIN
+                    </button>
+                </div>
+            </section>
+
+            <!-- Level notification -->
+            <div id="levelMessage" class="level-message hidden">
+                LEVEL 1
+            </div>
+
+        </main>
+
+        <footer>
+            <span>PIXELFALL</span>
+            <span>Survive • Collect • Escape</span>
+        </footer>
+
+    </div>
+
+    <script src="game.js"></script>
+</body>
+</html>
