@@ -1,3 +1,7 @@
+/* =========================================
+   RESET
+   ========================================= */
+
 * {
     margin: 0;
     padding: 0;
@@ -24,6 +28,10 @@
     --danger: #ef4444;
 }
 
+
+/* =========================================
+   HTML / BODY
+   ========================================= */
 
 html,
 body {
@@ -62,8 +70,14 @@ body {
     overflow: hidden;
 
     touch-action: none;
+
+    overscroll-behavior: none;
 }
 
+
+/* =========================================
+   MAIN WRAPPER
+   ========================================= */
 
 .game-wrapper {
 
@@ -74,6 +88,10 @@ body {
 
 }
 
+
+/* =========================================
+   TOP BAR
+   ========================================= */
 
 .topbar {
 
@@ -95,13 +113,13 @@ body {
             0.95
         );
 
-    border: 1px solid #29293a;
+    border:
+        1px solid #29293a;
 
     border-bottom: none;
 
     border-radius:
         16px 16px 0 0;
-
 }
 
 
@@ -112,14 +130,12 @@ body {
     font-weight: 900;
 
     letter-spacing: 2px;
-
 }
 
 
 .logo span {
 
     color: var(--primary);
-
 }
 
 
@@ -130,7 +146,6 @@ body {
     gap: 25px;
 
     font-weight: bold;
-
 }
 
 
@@ -139,7 +154,6 @@ body {
     min-width: 60px;
 
     text-align: center;
-
 }
 
 
@@ -168,9 +182,12 @@ body {
 .pause-btn:hover {
 
     background: var(--primary);
-
 }
 
+
+/* =========================================
+   GAME CONTAINER
+   ========================================= */
 
 .game-container {
 
@@ -186,7 +203,6 @@ body {
         1px solid #29293a;
 
     overflow: hidden;
-
 }
 
 
@@ -199,11 +215,12 @@ canvas {
     display: block;
 
     image-rendering: pixelated;
-
 }
 
 
-/* OVERLAYS */
+/* =========================================
+   OVERLAYS
+   ========================================= */
 
 .overlay {
 
@@ -227,19 +244,19 @@ canvas {
 
     backdrop-filter: blur(6px);
 
-    z-index: 10;
-
+    z-index: 50;
 }
 
 
 .hidden {
 
     display: none !important;
-
 }
 
 
-/* MENU */
+/* =========================================
+   MENU CARD
+   ========================================= */
 
 .menu-card {
 
@@ -291,7 +308,6 @@ canvas {
             246,
             0.12
         );
-
 }
 
 
@@ -311,7 +327,6 @@ canvas {
                 0.7
             )
         );
-
 }
 
 
@@ -320,14 +335,12 @@ canvas {
     font-size: 48px;
 
     letter-spacing: 4px;
-
 }
 
 
 .menu-card h1 span {
 
     color: var(--primary);
-
 }
 
 
@@ -336,7 +349,6 @@ canvas {
     font-size: 34px;
 
     margin-bottom: 15px;
-
 }
 
 
@@ -346,9 +358,12 @@ canvas {
 
     margin:
         10px 0 25px;
-
 }
 
+
+/* =========================================
+   BUTTONS
+   ========================================= */
 
 .main-btn,
 .secondary-btn {
@@ -368,7 +383,6 @@ canvas {
     cursor: pointer;
 
     transition: 0.2s;
-
 }
 
 
@@ -391,7 +405,6 @@ canvas {
             246,
             0.3
         );
-
 }
 
 
@@ -399,7 +412,6 @@ canvas {
 
     transform:
         translateY(-2px);
-
 }
 
 
@@ -410,7 +422,6 @@ canvas {
     background: #252536;
 
     color: white;
-
 }
 
 
@@ -419,7 +430,7 @@ canvas {
     padding: 15px;
 
     border:
-        1px solid #ef4444;
+        1px solid var(--danger);
 
     border-radius: 12px;
 
@@ -431,7 +442,7 @@ canvas {
             0.12
         );
 
-    color: #ef4444;
+    color: var(--danger);
 
     font-size: 16px;
 
@@ -440,16 +451,14 @@ canvas {
     cursor: pointer;
 
     transition: 0.2s;
-
 }
 
 
 .close-btn:hover {
 
-    background: #ef4444;
+    background: var(--danger);
 
     color: white;
-
 }
 
 
@@ -460,7 +469,6 @@ canvas {
     gap: 12px;
 
     margin-top: 20px;
-
 }
 
 
@@ -470,9 +478,12 @@ canvas {
 .close-btn {
 
     flex: 1;
-
 }
 
+
+/* =========================================
+   CONTROLS TEXT
+   ========================================= */
 
 .controls {
 
@@ -488,25 +499,24 @@ canvas {
     font-size: 13px;
 
     line-height: 1.9;
-
 }
 
 
 .controls b {
 
     color: white;
-
 }
 
 
 .mobile-help {
 
     color: var(--secondary);
-
 }
 
 
-/* SCORE */
+/* =========================================
+   SCORE
+   ========================================= */
 
 .final-score {
 
@@ -518,11 +528,12 @@ canvas {
 
     margin:
         5px 0 15px;
-
 }
 
 
-/* LEVEL */
+/* =========================================
+   LEVEL
+   ========================================= */
 
 .level-message {
 
@@ -572,42 +583,42 @@ canvas {
     z-index: 5;
 
     pointer-events: none;
-
 }
 
 
-/* ================================= */
-/* MOBILE CONTROLS */
-/* ================================= */
+/* =========================================
+   MOBILE CONTROLS
+   ========================================= */
 
 .mobile-controls {
+
+    display: none;
 
     position: absolute;
 
     inset: 0;
 
+    z-index: 20;
+
     pointer-events: none;
-
-    z-index: 8;
-
-    display: none;
-
 }
 
 
-/* JOYSTICK */
+/* =========================================
+   JOYSTICK
+   ========================================= */
 
 .joystick {
 
     position: absolute;
 
-    left: 25px;
+    left: 20px;
 
-    bottom: 25px;
+    bottom: 20px;
 
-    width: 120px;
+    width: 100px;
 
-    height: 120px;
+    height: 100px;
 
     border-radius: 50%;
 
@@ -616,7 +627,7 @@ canvas {
             139,
             92,
             246,
-            0.18
+            0.14
         );
 
     border:
@@ -631,7 +642,7 @@ canvas {
     box-shadow:
         inset 0 0 25px
         rgba(
-            139,    
+            139,
             92,
             246,
             0.15
@@ -640,11 +651,8 @@ canvas {
     pointer-events: auto;
 
     touch-action: none;
-
 }
 
-
-/* JOYSTICK KNOB */
 
 .joystick-knob {
 
@@ -654,9 +662,9 @@ canvas {
 
     top: 50%;
 
-    width: 55px;
+    width: 46px;
 
-    height: 55px;
+    height: 46px;
 
     transform:
         translate(
@@ -683,23 +691,24 @@ canvas {
         );
 
     pointer-events: none;
-
 }
 
 
-/* DASH */
+/* =========================================
+   DASH BUTTON
+   ========================================= */
 
 .dash-button {
 
     position: absolute;
 
-    right: 25px;
+    right: 20px;
 
-    bottom: 35px;
+    bottom: 25px;
 
-    width: 90px;
+    width: 78px;
 
-    height: 90px;
+    height: 78px;
 
     border-radius: 50%;
 
@@ -722,7 +731,7 @@ canvas {
 
     color: white;
 
-    font-size: 28px;
+    font-size: 25px;
 
     font-weight: bold;
 
@@ -738,7 +747,6 @@ canvas {
             238,
             0.25
         );
-
 }
 
 
@@ -746,10 +754,9 @@ canvas {
 
     display: block;
 
-    font-size: 10px;
+    font-size: 9px;
 
-    margin-top: 3px;
-
+    margin-top: 2px;
 }
 
 
@@ -764,11 +771,12 @@ canvas {
             238,
             0.4
         );
-
 }
 
 
-/* FOOTER */
+/* =========================================
+   FOOTER
+   ========================================= */
 
 footer {
 
@@ -796,31 +804,40 @@ footer {
 
     border-radius:
         0 0 16px 16px;
-
 }
 
 
-footer span:first-child {
+/* =========================================
+   MOBILE LANDSCAPE
+   ========================================= */
 
-    color: #aaaabd;
+@media
+(max-width: 900px)
+and
+(orientation: landscape) {
 
-    font-weight: bold;
-
-}
-
-
-/* ================================= */
-/* MOBILE SCREEN */
-/* ================================= */
-
-@media (max-width: 700px) {
-
+    html,
     body {
 
-        align-items: center;
+        width: 100%;
+
+        height: 100%;
+
+        min-height: 100%;
 
         overflow: hidden;
 
+        margin: 0;
+
+        padding: 0;
+    }
+
+
+    body {
+
+        display: block;
+
+        background: #050509;
     }
 
 
@@ -828,24 +845,44 @@ footer span:first-child {
 
         width: 100vw;
 
+        height: 100dvh;
+
+        max-width: none;
+
+        display: flex;
+
+        flex-direction: column;
     }
 
 
+    /* HEADER */
+
     .topbar {
 
-        height: 55px;
+        flex: 0 0 48px;
 
-        padding: 0 10px;
+        width: 100%;
+
+        height: 48px;
+
+        padding:
+            0 10px;
 
         border-radius: 0;
 
+        border-left: none;
+
+        border-right: none;
+
+        border-top: none;
     }
 
 
     .logo {
 
-        font-size: 17px;
+        font-size: 16px;
 
+        letter-spacing: 1.5px;
     }
 
 
@@ -854,14 +891,12 @@ footer span:first-child {
         gap: 5px;
 
         font-size: 12px;
-
     }
 
 
     .stats div {
 
-        min-width: 38px;
-
+        min-width: 35px;
     }
 
 
@@ -872,81 +907,386 @@ footer span:first-child {
         height: 34px;
 
         font-size: 15px;
-
     }
 
+
+    /* GAME */
 
     .game-container {
 
+        position: relative;
+
         width: 100vw;
 
-        height: calc(
-            100vw * 0.5625
-        );
+        height:
+            calc(
+                100dvh - 78px
+            );
 
-        max-height: 75vh;
+        min-height: 0;
 
+        flex: 1 1 auto;
+
+        aspect-ratio: auto;
+
+        overflow: hidden;
+
+        border-left: none;
+
+        border-right: none;
+
+        border-radius: 0;
     }
 
+
+    canvas {
+
+        width: 100%;
+
+        height: 100%;
+
+        display: block;
+
+        image-rendering: pixelated;
+    }
+
+
+    /* CONTROLS */
 
     .mobile-controls {
 
         display: block;
 
+        position: absolute;
+
+        inset: 0;
+
+        z-index: 20;
+
+        pointer-events: none;
     }
 
 
-    .controls {
+    .joystick {
 
-        font-size: 11px;
+        left: 18px;
 
+        bottom: 15px;
+
+        width: 95px;
+
+        height: 95px;
     }
 
+
+    .joystick-knob {
+
+        width: 44px;
+
+        height: 44px;
+    }
+
+
+    .dash-button {
+
+        right: 18px;
+
+        bottom: 20px;
+
+        width: 75px;
+
+        height: 75px;
+    }
+
+
+    /* FOOTER */
+
+    footer {
+
+        flex: 0 0 30px;
+
+        width: 100%;
+
+        height: 30px;
+
+        border-radius: 0;
+
+        border-left: none;
+
+        border-right: none;
+
+        border-bottom: none;
+
+        font-size: 8px;
+    }
+
+
+    /* MENUS */
 
     .menu-card {
 
-        padding:
-            25px 20px;
+        width: 65%;
 
-    }
+        max-height: 90%;
 
+        padding: 20px;
 
-    .menu-card h1 {
-
-        font-size: 34px;
-
-    }
-
-
-    .menu-card h2 {
-
-        font-size: 26px;
-
+        overflow-y: auto;
     }
 
 
     .ghost-logo {
 
-        font-size: 50px;
+        font-size: 40px;
+    }
 
+
+    .menu-card h1 {
+
+        font-size: 30px;
+    }
+
+
+    .menu-card h2 {
+
+        font-size: 24px;
+    }
+
+
+    .menu-card > p {
+
+        margin:
+            6px 0 12px;
+    }
+
+
+    .controls {
+
+        margin-top: 12px;
+
+        padding-top: 10px;
+
+        font-size: 10px;
     }
 
 
     .game-over-buttons {
 
-        flex-direction: column;
+        flex-direction: row;
 
+        gap: 10px;
+    }
+
+}
+
+
+/* =========================================
+   SMALLER LANDSCAPE PHONES
+   ========================================= */
+
+@media
+(max-width: 700px)
+and
+(orientation: landscape) {
+
+    .topbar {
+
+        flex-basis: 44px;
+
+        height: 44px;
+    }
+
+
+    .game-container {
+
+        height:
+            calc(
+                100dvh - 72px
+            );
     }
 
 
     footer {
 
-        border-radius: 0;
+        flex-basis: 28px;
 
-        height: 30px;
+        height: 28px;
+    }
 
-        font-size: 8px;
 
+    .joystick {
+
+        width: 82px;
+
+        height: 82px;
+
+        left: 12px;
+
+        bottom: 10px;
+    }
+
+
+    .joystick-knob {
+
+        width: 38px;
+
+        height: 38px;
+    }
+
+
+    .dash-button {
+
+        width: 65px;
+
+        height: 65px;
+
+        right: 12px;
+
+        bottom: 13px;
+
+        font-size: 21px;
+    }
+
+
+    .menu-card {
+
+        width: 70%;
+
+        padding:
+            15px 18px;
+    }
+
+
+    .ghost-logo {
+
+        font-size: 32px;
+
+        margin-bottom: 2px;
+    }
+
+
+    .menu-card h1 {
+
+        font-size: 25px;
+    }
+
+
+    .menu-card h2 {
+
+        font-size: 21px;
+
+        margin-bottom: 5px;
+    }
+
+
+    .controls {
+
+        display: none;
+    }
+
+
+    .game-over-buttons {
+
+        margin-top: 10px;
+    }
+
+
+    .main-btn,
+    .close-btn {
+
+        padding: 11px;
+
+        font-size: 13px;
+    }
+
+
+    .final-score {
+
+        font-size: 40px;
+    }
+
+}
+
+
+/* =========================================
+   PORTRAIT PHONE
+   ========================================= */
+
+@media
+(max-width: 900px)
+and
+(orientation: portrait) {
+
+    body {
+
+        width: 100vw;
+
+        height: 100dvh;
+
+        background:
+            radial-gradient(
+                circle at center,
+                #24164a,
+                #050509 70%
+            );
+    }
+
+
+    .game-wrapper {
+
+        width: 100vw;
+
+        height: 100dvh;
+
+        display: flex;
+
+        justify-content: center;
+
+        align-items: center;
+    }
+
+
+    .game-container {
+
+        display: none;
+    }
+
+
+    .topbar,
+    footer {
+
+        display: none;
+    }
+
+
+    body::after {
+
+        content:
+            "Please rotate your phone to landscape to play PIXELFALL";
+
+        position: fixed;
+
+        inset: 0;
+
+        display: flex;
+
+        align-items: center;
+
+        justify-content: center;
+
+        text-align: center;
+
+        padding: 40px;
+
+        color: white;
+
+        font-size: 20px;
+
+        font-weight: 800;
+
+        line-height: 1.5;
+
+        z-index: 9999;
     }
 
 }
