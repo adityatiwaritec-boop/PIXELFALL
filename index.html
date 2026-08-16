@@ -1,25 +1,40 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+
     <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <meta
+        name="viewport"
+        content="width=device-width,
+                 initial-scale=1.0,
+                 maximum-scale=1.0,
+                 user-scalable=no,
+                 viewport-fit=cover"
+    >
 
     <title>PIXELFALL</title>
 
     <link rel="stylesheet" href="style.css">
+
 </head>
+
 
 <body>
 
 <div class="game-wrapper">
 
+    <!-- ========================= -->
     <!-- TOP BAR -->
+    <!-- ========================= -->
+
     <header class="topbar">
 
         <div class="logo">
             <span>PIXEL</span>FALL
         </div>
+
 
         <div class="stats">
 
@@ -37,22 +52,35 @@
 
         </div>
 
-        <button id="pauseBtn" class="pause-btn">
+
+        <button
+            id="pauseBtn"
+            class="pause-btn"
+            type="button"
+        >
             Ⅱ
         </button>
 
     </header>
 
 
+    <!-- ========================= -->
     <!-- GAME -->
+    <!-- ========================= -->
+
     <main class="game-container">
 
         <canvas id="gameCanvas"></canvas>
 
 
+        <!-- ========================= -->
         <!-- START SCREEN -->
+        <!-- ========================= -->
 
-        <section id="startScreen" class="overlay">
+        <section
+            id="startScreen"
+            class="overlay"
+        >
 
             <div class="menu-card">
 
@@ -60,35 +88,46 @@
                     👻
                 </div>
 
+
                 <h1>
                     PIXEL<span>FALL</span>
                 </h1>
+
 
                 <p>
                     Survive the darkness.
                 </p>
 
-                <button id="startBtn" class="main-btn">
+
+                <button
+                    id="startBtn"
+                    class="main-btn"
+                    type="button"
+                >
                     PLAY GAME
                 </button>
+
 
                 <div class="controls">
 
                     <p>
-                        <b>W A S D</b> / <b>ARROWS</b>
+                        <b>W A S D</b> /
+                        <b>ARROWS</b>
                         — Move
                     </p>
 
                     <p>
-                        <b>SPACE</b> — Dash
+                        <b>SPACE</b>
+                        — Dash
                     </p>
 
                     <p>
-                        <b>P</b> — Pause
+                        <b>P</b>
+                        — Pause
                     </p>
 
                     <p class="mobile-help">
-                        📱 On mobile use the joystick
+                        📱 Tap PLAY GAME on mobile
                     </p>
 
                 </div>
@@ -98,10 +137,14 @@
         </section>
 
 
-        <!-- PAUSE -->
+        <!-- ========================= -->
+        <!-- PAUSE SCREEN -->
+        <!-- ========================= -->
 
-        <section id="pauseScreen"
-                 class="overlay hidden">
+        <section
+            id="pauseScreen"
+            class="overlay hidden"
+        >
 
             <div class="menu-card">
 
@@ -109,18 +152,22 @@
                     GAME PAUSED
                 </h2>
 
-                <button id="resumeBtn"
-                        class="main-btn">
 
+                <button
+                    id="resumeBtn"
+                    class="main-btn"
+                    type="button"
+                >
                     RESUME
-
                 </button>
 
-                <button id="restartBtn1"
-                        class="secondary-btn">
 
+                <button
+                    id="restartBtn1"
+                    class="secondary-btn"
+                    type="button"
+                >
                     RESTART
-
                 </button>
 
             </div>
@@ -128,10 +175,14 @@
         </section>
 
 
+        <!-- ========================= -->
         <!-- GAME OVER -->
+        <!-- ========================= -->
 
-        <section id="gameOverScreen"
-                 class="overlay hidden">
+        <section
+            id="gameOverScreen"
+            class="overlay hidden"
+        >
 
             <div class="menu-card">
 
@@ -139,40 +190,48 @@
                     💀
                 </div>
 
+
                 <h2>
                     GAME OVER
                 </h2>
+
 
                 <p>
                     Your Score
                 </p>
 
-                <div id="finalScore"
-                     class="final-score">
 
+                <div
+                    id="finalScore"
+                    class="final-score"
+                >
                     0
-
                 </div>
+
 
                 <p>
                     High Score:
                     <b id="highScore">0</b>
                 </p>
 
+
                 <div class="game-over-buttons">
 
-                    <button id="restartBtn"
-                            class="main-btn">
-
+                    <button
+                        id="restartBtn"
+                        class="main-btn"
+                        type="button"
+                    >
                         PLAY AGAIN
-
                     </button>
 
-                    <button id="closeGameBtn"
-                            class="close-btn">
 
+                    <button
+                        id="closeGameBtn"
+                        class="close-btn"
+                        type="button"
+                    >
                         CLOSE GAME
-
                     </button>
 
                 </div>
@@ -182,43 +241,55 @@
         </section>
 
 
-        <!-- LEVEL -->
+        <!-- ========================= -->
+        <!-- LEVEL MESSAGE -->
+        <!-- ========================= -->
 
-        <div id="levelMessage"
-             class="level-message hidden">
-
+        <div
+            id="levelMessage"
+            class="level-message hidden"
+        >
             LEVEL 1
-
         </div>
 
 
-        <!-- ========================== -->
+        <!-- ========================= -->
         <!-- MOBILE CONTROLS -->
-        <!-- ========================== -->
+        <!-- ========================= -->
 
-        <div id="mobileControls"
-             class="mobile-controls">
+        <div
+            id="mobileControls"
+            class="mobile-controls"
+        >
 
             <!-- JOYSTICK -->
 
-            <div id="joystick"
-                 class="joystick">
+            <div
+                id="joystick"
+                class="joystick"
+            >
 
-                <div id="joystickKnob"
-                     class="joystick-knob">
-
-                </div>
+                <div
+                    id="joystickKnob"
+                    class="joystick-knob"
+                ></div>
 
             </div>
 
 
-            <!-- DASH BUTTON -->
+            <!-- DASH -->
 
-            <button id="dashBtn"
-                    class="dash-button">
+            <button
+                id="dashBtn"
+                class="dash-button"
+                type="button"
+            >
 
                 ⚡
-                <span>DASH</span>
+
+                <span>
+                    DASH
+                </span>
 
             </button>
 
@@ -227,7 +298,9 @@
     </main>
 
 
+    <!-- ========================= -->
     <!-- FOOTER -->
+    <!-- ========================= -->
 
     <footer>
 
@@ -247,4 +320,5 @@
 <script src="game.js"></script>
 
 </body>
+
 </html>
