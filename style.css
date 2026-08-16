@@ -1,6 +1,6 @@
 /* =========================================
    RESET
-   ========================================= */
+========================================= */
 
 * {
     margin: 0;
@@ -9,34 +9,44 @@
 }
 
 
+/* =========================================
+   VARIABLES
+========================================= */
+
 :root {
 
-    --bg: #07070d;
+    --background: #050509;
 
     --panel: #11111b;
 
-    --panel2: #191927;
+    --panel-light: #1b1b2b;
 
-    --primary: #8b5cf6;
+    --border: #303044;
 
-    --secondary: #22d3ee;
+    --purple: #8b5cf6;
 
-    --text: #ffffff;
+    --purple-light: #a78bfa;
+
+    --cyan: #22d3ee;
+
+    --red: #ef4444;
+
+    --white: #ffffff;
 
     --muted: #9ca3af;
 
-    --danger: #ef4444;
 }
 
 
 /* =========================================
-   HTML / BODY
-   ========================================= */
+   PAGE
+========================================= */
 
 html,
 body {
 
     width: 100%;
+
     min-height: 100%;
 
 }
@@ -49,12 +59,12 @@ body {
     background:
         radial-gradient(
             circle at 50% 0%,
-            #24164a 0%,
-            transparent 40%
+            #24164a,
+            transparent 45%
         ),
-        #050509;
+        var(--background);
 
-    color: var(--text);
+    color: var(--white);
 
     font-family:
         Arial,
@@ -72,12 +82,13 @@ body {
     touch-action: none;
 
     overscroll-behavior: none;
+
 }
 
 
 /* =========================================
-   MAIN WRAPPER
-   ========================================= */
+   WRAPPER
+========================================= */
 
 .game-wrapper {
 
@@ -91,7 +102,7 @@ body {
 
 /* =========================================
    TOP BAR
-   ========================================= */
+========================================= */
 
 .topbar {
 
@@ -110,16 +121,16 @@ body {
             17,
             17,
             27,
-            0.95
+            0.96
         );
 
-    border:
-        1px solid #29293a;
+    border: 1px solid var(--border);
 
     border-bottom: none;
 
     border-radius:
         16px 16px 0 0;
+
 }
 
 
@@ -130,12 +141,14 @@ body {
     font-weight: 900;
 
     letter-spacing: 2px;
+
 }
 
 
 .logo span {
 
-    color: var(--primary);
+    color: var(--purple);
+
 }
 
 
@@ -146,48 +159,60 @@ body {
     gap: 25px;
 
     font-weight: bold;
+
 }
 
 
 .stats div {
 
-    min-width: 60px;
+    min-width: 55px;
 
     text-align: center;
+
 }
 
 
-.pause-btn {
+.top-buttons {
+
+    display: flex;
+
+    gap: 8px;
+
+}
+
+
+.icon-btn {
 
     width: 42px;
 
     height: 42px;
 
-    border:
-        1px solid #3a3a4d;
+    border: 1px solid #404055;
 
     border-radius: 10px;
 
-    background: #191927;
+    background:
+        var(--panel-light);
 
     color: white;
 
-    cursor: pointer;
+    font-size: 17px;
 
-    font-size: 18px;
+    cursor: pointer;
 
 }
 
 
-.pause-btn:hover {
+.icon-btn:active {
 
-    background: var(--primary);
+    transform: scale(0.94);
+
 }
 
 
 /* =========================================
-   GAME CONTAINER
-   ========================================= */
+   GAME
+========================================= */
 
 .game-container {
 
@@ -199,28 +224,29 @@ body {
 
     background: #05050a;
 
-    border:
-        1px solid #29293a;
+    border: 1px solid var(--border);
 
     overflow: hidden;
+
 }
 
 
 canvas {
 
+    display: block;
+
     width: 100%;
 
     height: 100%;
 
-    display: block;
-
     image-rendering: pixelated;
+
 }
 
 
 /* =========================================
-   OVERLAYS
-   ========================================= */
+   OVERLAY
+========================================= */
 
 .overlay {
 
@@ -230,65 +256,65 @@ canvas {
 
     display: flex;
 
-    justify-content: center;
-
     align-items: center;
+
+    justify-content: center;
 
     background:
         rgba(
-            4,
-            4,
-            10,
+            3,
+            3,
+            9,
             0.78
         );
 
     backdrop-filter: blur(6px);
 
-    z-index: 50;
+    z-index: 200;
+
 }
 
 
 .hidden {
 
     display: none !important;
+
 }
 
 
 /* =========================================
    MENU CARD
-   ========================================= */
+========================================= */
 
 .menu-card {
 
-    width:
-        min(
-            430px,
-            90%
-        );
+    width: min(
+        430px,
+        90%
+    );
+
+    padding: 40px 35px;
 
     text-align: center;
-
-    padding: 45px 35px;
 
     background:
         linear-gradient(
             145deg,
             rgba(
-                29,
-                29,
+                30,
+                30,
                 48,
-                0.97
+                0.98
             ),
             rgba(
                 12,
                 12,
                 22,
-                0.97
+                0.98
             )
         );
 
-    border:
-        1px solid #3c3c5b;
+    border: 1px solid #44445e;
 
     border-radius: 22px;
 
@@ -299,56 +325,42 @@ canvas {
             0,
             0,
             0.6
-        ),
-
-        0 0 50px
-        rgba(
-            139,
-            92,
-            246,
-            0.12
         );
+
 }
 
 
 .ghost-logo {
 
-    font-size: 65px;
+    font-size: 60px;
 
-    margin-bottom: 10px;
+    margin-bottom: 8px;
 
-    filter:
-        drop-shadow(
-            0 0 15px
-            rgba(
-                139,
-                92,
-                246,
-                0.7
-            )
-        );
 }
 
 
 .menu-card h1 {
 
-    font-size: 48px;
+    font-size: 46px;
 
     letter-spacing: 4px;
+
 }
 
 
 .menu-card h1 span {
 
-    color: var(--primary);
+    color: var(--purple);
+
 }
 
 
 .menu-card h2 {
 
-    font-size: 34px;
+    font-size: 32px;
 
     margin-bottom: 15px;
+
 }
 
 
@@ -356,62 +368,56 @@ canvas {
 
     color: var(--muted);
 
-    margin:
-        10px 0 25px;
+    margin: 10px 0 22px;
+
 }
 
 
 /* =========================================
    BUTTONS
-   ========================================= */
+========================================= */
 
 .main-btn,
-.secondary-btn {
+.secondary-btn,
+.close-btn {
 
     width: 100%;
 
-    padding: 15px;
-
-    border: none;
+    padding: 14px;
 
     border-radius: 12px;
 
-    font-size: 16px;
+    font-size: 15px;
 
     font-weight: 800;
 
     cursor: pointer;
 
-    transition: 0.2s;
 }
 
 
 .main-btn {
 
-    background:
-        linear-gradient(
-            135deg,
-            var(--primary),
-            #6d28d9
-        );
+    border: none;
 
     color: white;
 
-    box-shadow:
-        0 8px 25px
-        rgba(
-            139,
-            92,
-            246,
-            0.3
+    background:
+        linear-gradient(
+            135deg,
+            var(--purple),
+            #6d28d9
         );
+
 }
 
 
-.main-btn:hover {
+.main-btn:active,
+.secondary-btn:active,
+.close-btn:active {
 
-    transform:
-        translateY(-2px);
+    transform: scale(0.97);
+
 }
 
 
@@ -419,48 +425,35 @@ canvas {
 
     margin-top: 12px;
 
-    background: #252536;
+    border: none;
+
+    background: #29293b;
 
     color: white;
+
 }
 
 
 .close-btn {
 
-    padding: 15px;
-
-    border:
-        1px solid var(--danger);
-
-    border-radius: 12px;
+    border: 1px solid var(--red);
 
     background:
         rgba(
             239,
             68,
             68,
-            0.12
+            0.1
         );
 
-    color: var(--danger);
+    color: var(--red);
 
-    font-size: 16px;
-
-    font-weight: 800;
-
-    cursor: pointer;
-
-    transition: 0.2s;
 }
 
 
-.close-btn:hover {
-
-    background: var(--danger);
-
-    color: white;
-}
-
+/* =========================================
+   GAME OVER BUTTONS
+========================================= */
 
 .game-over-buttons {
 
@@ -469,79 +462,68 @@ canvas {
     gap: 12px;
 
     margin-top: 20px;
-}
 
-
-.game-over-buttons
-.main-btn,
-.game-over-buttons
-.close-btn {
-
-    flex: 1;
 }
 
 
 /* =========================================
-   CONTROLS TEXT
-   ========================================= */
+   SCORE
+========================================= */
+
+.final-score {
+
+    margin:
+        5px 0 12px;
+
+    font-size: 55px;
+
+    font-weight: 900;
+
+    color: var(--cyan);
+
+}
+
+
+/* =========================================
+   CONTROLS HELP
+========================================= */
 
 .controls {
 
-    margin-top: 25px;
+    margin-top: 22px;
 
-    padding-top: 20px;
+    padding-top: 17px;
 
     border-top:
-        1px solid #303044;
+        1px solid var(--border);
 
     color: var(--muted);
 
     font-size: 13px;
 
-    line-height: 1.9;
+    line-height: 1.8;
+
 }
 
 
 .controls b {
 
     color: white;
-}
 
-
-.mobile-help {
-
-    color: var(--secondary);
-}
-
-
-/* =========================================
-   SCORE
-   ========================================= */
-
-.final-score {
-
-    font-size: 55px;
-
-    font-weight: 900;
-
-    color: var(--secondary);
-
-    margin:
-        5px 0 15px;
 }
 
 
 /* =========================================
    LEVEL
-   ========================================= */
+========================================= */
 
 .level-message {
 
     position: absolute;
 
-    top: 50%;
-
     left: 50%;
+
+    top: 50%;
 
     transform:
         translate(
@@ -550,7 +532,7 @@ canvas {
         );
 
     padding:
-        15px 30px;
+        15px 28px;
 
     background:
         rgba(
@@ -561,34 +543,24 @@ canvas {
         );
 
     border:
-        1px solid var(--primary);
+        1px solid var(--purple);
 
     border-radius: 12px;
 
-    font-size: 30px;
+    font-size: 28px;
 
     font-weight: 900;
 
-    color: white;
-
-    box-shadow:
-        0 0 35px
-        rgba(
-            139,
-            92,
-            246,
-            0.4
-        );
-
-    z-index: 5;
+    z-index: 50;
 
     pointer-events: none;
+
 }
 
 
 /* =========================================
    MOBILE CONTROLS
-   ========================================= */
+========================================= */
 
 .mobile-controls {
 
@@ -598,27 +570,28 @@ canvas {
 
     inset: 0;
 
-    z-index: 20;
+    z-index: 100;
 
     pointer-events: none;
+
 }
 
 
 /* =========================================
    JOYSTICK
-   ========================================= */
+========================================= */
 
 .joystick {
 
     position: absolute;
 
-    left: 20px;
+    left: 18px;
 
-    bottom: 20px;
+    bottom: 18px;
 
-    width: 100px;
+    width: 95px;
 
-    height: 100px;
+    height: 95px;
 
     border-radius: 50%;
 
@@ -627,7 +600,7 @@ canvas {
             139,
             92,
             246,
-            0.14
+            0.18
         );
 
     border:
@@ -636,7 +609,7 @@ canvas {
             139,
             92,
             246,
-            0.45
+            0.55
         );
 
     box-shadow:
@@ -651,6 +624,9 @@ canvas {
     pointer-events: auto;
 
     touch-action: none;
+
+    z-index: 101;
+
 }
 
 
@@ -662,9 +638,9 @@ canvas {
 
     top: 50%;
 
-    width: 46px;
+    width: 44px;
 
-    height: 46px;
+    height: 44px;
 
     transform:
         translate(
@@ -677,7 +653,7 @@ canvas {
     background:
         linear-gradient(
             145deg,
-            #a78bfa,
+            var(--purple-light),
             #6d28d9
         );
 
@@ -687,28 +663,29 @@ canvas {
             139,
             92,
             246,
-            0.6
+            0.7
         );
 
     pointer-events: none;
+
 }
 
 
 /* =========================================
-   DASH BUTTON
-   ========================================= */
+   DASH
+========================================= */
 
 .dash-button {
 
     position: absolute;
 
-    right: 20px;
+    right: 18px;
 
-    bottom: 25px;
+    bottom: 22px;
 
-    width: 78px;
+    width: 75px;
 
-    height: 78px;
+    height: 75px;
 
     border-radius: 50%;
 
@@ -718,7 +695,7 @@ canvas {
             34,
             211,
             238,
-            0.5
+            0.6
         );
 
     background:
@@ -726,12 +703,12 @@ canvas {
             34,
             211,
             238,
-            0.16
+            0.18
         );
 
     color: white;
 
-    font-size: 25px;
+    font-size: 24px;
 
     font-weight: bold;
 
@@ -739,14 +716,8 @@ canvas {
 
     touch-action: none;
 
-    box-shadow:
-        0 0 25px
-        rgba(
-            34,
-            211,
-            238,
-            0.25
-        );
+    z-index: 101;
+
 }
 
 
@@ -754,36 +725,22 @@ canvas {
 
     display: block;
 
+    margin-top: 2px;
+
     font-size: 9px;
 
-    margin-top: 2px;
-}
-
-
-.dash-button:active {
-
-    transform: scale(0.9);
-
-    background:
-        rgba(
-            34,
-            211,
-            238,
-            0.4
-        );
 }
 
 
 /* =========================================
    FOOTER
-   ========================================= */
+========================================= */
 
 footer {
 
     height: 40px;
 
-    padding:
-        0 15px;
+    padding: 0 15px;
 
     display: flex;
 
@@ -791,30 +748,30 @@ footer {
 
     justify-content: space-between;
 
-    color: #77778b;
-
-    font-size: 11px;
-
     background: #0d0d15;
 
-    border:
-        1px solid #29293a;
+    border: 1px solid var(--border);
 
     border-top: none;
 
     border-radius:
         0 0 16px 16px;
+
+    color: #77778b;
+
+    font-size: 11px;
+
 }
 
 
 /* =========================================
-   MOBILE LANDSCAPE
-   ========================================= */
+   LANDSCAPE MOBILE
+========================================= */
 
 @media
-(max-width: 900px)
+(orientation: landscape)
 and
-(orientation: landscape) {
+(pointer: coarse) {
 
     html,
     body {
@@ -827,9 +784,6 @@ and
 
         overflow: hidden;
 
-        margin: 0;
-
-        padding: 0;
     }
 
 
@@ -838,6 +792,7 @@ and
         display: block;
 
         background: #050509;
+
     }
 
 
@@ -852,21 +807,18 @@ and
         display: flex;
 
         flex-direction: column;
+
     }
 
 
-    /* HEADER */
-
     .topbar {
 
-        flex: 0 0 48px;
-
-        width: 100%;
+        flex:
+            0 0 48px;
 
         height: 48px;
 
-        padding:
-            0 10px;
+        padding: 0 10px;
 
         border-radius: 0;
 
@@ -875,6 +827,7 @@ and
         border-right: none;
 
         border-top: none;
+
     }
 
 
@@ -882,7 +835,8 @@ and
 
         font-size: 16px;
 
-        letter-spacing: 1.5px;
+        letter-spacing: 1px;
+
     }
 
 
@@ -891,30 +845,36 @@ and
         gap: 5px;
 
         font-size: 12px;
+
     }
 
 
     .stats div {
 
-        min-width: 35px;
+        min-width: 34px;
+
     }
 
 
-    .pause-btn {
+    .top-buttons {
+
+        gap: 4px;
+
+    }
+
+
+    .icon-btn {
 
         width: 34px;
 
         height: 34px;
 
-        font-size: 15px;
+        font-size: 14px;
+
     }
 
 
-    /* GAME */
-
     .game-container {
-
-        position: relative;
 
         width: 100vw;
 
@@ -923,89 +883,21 @@ and
                 100dvh - 78px
             );
 
-        min-height: 0;
-
-        flex: 1 1 auto;
+        flex: 1;
 
         aspect-ratio: auto;
-
-        overflow: hidden;
 
         border-left: none;
 
         border-right: none;
 
-        border-radius: 0;
     }
 
-
-    canvas {
-
-        width: 100%;
-
-        height: 100%;
-
-        display: block;
-
-        image-rendering: pixelated;
-    }
-
-
-    /* CONTROLS */
-
-    .mobile-controls {
-
-        display: block;
-
-        position: absolute;
-
-        inset: 0;
-
-        z-index: 20;
-
-        pointer-events: none;
-    }
-
-
-    .joystick {
-
-        left: 18px;
-
-        bottom: 15px;
-
-        width: 95px;
-
-        height: 95px;
-    }
-
-
-    .joystick-knob {
-
-        width: 44px;
-
-        height: 44px;
-    }
-
-
-    .dash-button {
-
-        right: 18px;
-
-        bottom: 20px;
-
-        width: 75px;
-
-        height: 75px;
-    }
-
-
-    /* FOOTER */
 
     footer {
 
-        flex: 0 0 30px;
-
-        width: 100%;
+        flex:
+            0 0 30px;
 
         height: 30px;
 
@@ -1018,82 +910,116 @@ and
         border-bottom: none;
 
         font-size: 8px;
+
     }
 
 
-    /* MENUS */
+    .mobile-controls {
+
+        display: block !important;
+
+    }
+
+
+    .joystick {
+
+        display: block !important;
+
+        width: 92px;
+
+        height: 92px;
+
+        left: 18px;
+
+        bottom: 14px;
+
+    }
+
+
+    .joystick-knob {
+
+        display: block !important;
+
+        width: 43px;
+
+        height: 43px;
+
+    }
+
+
+    .dash-button {
+
+        display: block !important;
+
+        width: 72px;
+
+        height: 72px;
+
+        right: 18px;
+
+        bottom: 17px;
+
+    }
+
 
     .menu-card {
 
-        width: 65%;
+        width: 68%;
 
         max-height: 90%;
 
-        padding: 20px;
+        padding: 18px;
 
         overflow-y: auto;
+
     }
 
 
     .ghost-logo {
 
-        font-size: 40px;
+        font-size: 35px;
+
     }
 
 
     .menu-card h1 {
 
-        font-size: 30px;
+        font-size: 28px;
+
     }
 
 
     .menu-card h2 {
 
-        font-size: 24px;
-    }
+        font-size: 23px;
 
-
-    .menu-card > p {
-
-        margin:
-            6px 0 12px;
     }
 
 
     .controls {
 
-        margin-top: 12px;
+        display: none;
 
-        padding-top: 10px;
-
-        font-size: 10px;
-    }
-
-
-    .game-over-buttons {
-
-        flex-direction: row;
-
-        gap: 10px;
     }
 
 }
 
 
 /* =========================================
-   SMALLER LANDSCAPE PHONES
-   ========================================= */
+   SMALL LANDSCAPE
+========================================= */
 
 @media
-(max-width: 700px)
+(max-height: 430px)
 and
 (orientation: landscape) {
 
     .topbar {
 
-        flex-basis: 44px;
+        flex-basis: 42px;
 
-        height: 44px;
+        height: 42px;
+
     }
 
 
@@ -1101,8 +1027,9 @@ and
 
         height:
             calc(
-                100dvh - 72px
+                100dvh - 70px
             );
+
     }
 
 
@@ -1111,106 +1038,112 @@ and
         flex-basis: 28px;
 
         height: 28px;
+
     }
 
 
     .joystick {
 
-        width: 82px;
+        width: 78px;
 
-        height: 82px;
+        height: 78px;
 
         left: 12px;
 
-        bottom: 10px;
+        bottom: 9px;
+
     }
 
 
     .joystick-knob {
 
-        width: 38px;
+        width: 36px;
 
-        height: 38px;
+        height: 36px;
+
     }
 
 
     .dash-button {
 
-        width: 65px;
+        width: 62px;
 
-        height: 65px;
+        height: 62px;
 
         right: 12px;
 
-        bottom: 13px;
+        bottom: 11px;
 
-        font-size: 21px;
+        font-size: 20px;
+
     }
 
 
     .menu-card {
 
-        width: 70%;
+        width: 72%;
 
         padding:
-            15px 18px;
+            12px 18px;
+
     }
 
 
     .ghost-logo {
 
-        font-size: 32px;
+        font-size: 28px;
 
-        margin-bottom: 2px;
+        margin-bottom: 0;
+
     }
 
 
     .menu-card h1 {
 
-        font-size: 25px;
+        font-size: 24px;
+
     }
 
 
     .menu-card h2 {
 
-        font-size: 21px;
+        font-size: 20px;
 
         margin-bottom: 5px;
+
     }
 
 
-    .controls {
+    .menu-card > p {
 
-        display: none;
-    }
+        margin: 5px;
 
-
-    .game-over-buttons {
-
-        margin-top: 10px;
     }
 
 
     .main-btn,
+    .secondary-btn,
     .close-btn {
 
-        padding: 11px;
+        padding: 10px;
 
-        font-size: 13px;
+        font-size: 12px;
+
     }
 
 
     .final-score {
 
-        font-size: 40px;
+        font-size: 38px;
+
     }
 
 }
 
 
 /* =========================================
-   PORTRAIT PHONE
-   ========================================= */
+   PORTRAIT
+========================================= */
 
 @media
 (max-width: 900px)
@@ -1219,50 +1152,29 @@ and
 
     body {
 
-        width: 100vw;
-
-        height: 100dvh;
-
         background:
             radial-gradient(
                 circle at center,
                 #24164a,
                 #050509 70%
             );
-    }
 
-
-    .game-wrapper {
-
-        width: 100vw;
-
-        height: 100dvh;
-
-        display: flex;
-
-        justify-content: center;
-
-        align-items: center;
-    }
-
-
-    .game-container {
-
-        display: none;
     }
 
 
     .topbar,
+    .game-container,
     footer {
 
         display: none;
+
     }
 
 
     body::after {
 
         content:
-            "Please rotate your phone to landscape to play PIXELFALL";
+            "Rotate your phone to landscape to play PIXELFALL";
 
         position: fixed;
 
@@ -1270,23 +1182,24 @@ and
 
         display: flex;
 
-        align-items: center;
-
         justify-content: center;
 
-        text-align: center;
+        align-items: center;
 
         padding: 40px;
+
+        text-align: center;
 
         color: white;
 
         font-size: 20px;
 
-        font-weight: 800;
+        font-weight: bold;
 
         line-height: 1.5;
 
         z-index: 9999;
+
     }
 
 }
