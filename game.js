@@ -1,97 +1,144 @@
+/* =========================================
+   PIXELFALL
+   ========================================= */
+
+
+/* =========================================
+   CANVAS
+   ========================================= */
+
 const canvas =
-    document.getElementById("gameCanvas");
+    document.getElementById(
+        "gameCanvas"
+    );
 
 const ctx =
     canvas.getContext("2d");
 
 
-// ==========================================
-// SCREENS
-// ==========================================
-
-const startScreen =
-    document.getElementById("startScreen");
-
-const pauseScreen =
-    document.getElementById("pauseScreen");
-
-const gameOverScreen =
-    document.getElementById("gameOverScreen");
-
-
-// ==========================================
-// BUTTONS
-// ==========================================
-
-const startBtn =
-    document.getElementById("startBtn");
-
-const pauseBtn =
-    document.getElementById("pauseBtn");
-
-const resumeBtn =
-    document.getElementById("resumeBtn");
-
-const restartBtn =
-    document.getElementById("restartBtn");
-
-const restartBtn1 =
-    document.getElementById("restartBtn1");
-
-const closeGameBtn =
-    document.getElementById("closeGameBtn");
-
-const dashBtn =
-    document.getElementById("dashBtn");
-
-
-// ==========================================
-// HUD
-// ==========================================
-
-const scoreElement =
-    document.getElementById("score");
-
-const coinsElement =
-    document.getElementById("coins");
-
-const livesElement =
-    document.getElementById("lives");
-
-const finalScoreElement =
-    document.getElementById("finalScore");
-
-const highScoreElement =
-    document.getElementById("highScore");
-
-
-// ==========================================
-// MOBILE JOYSTICK
-// ==========================================
-
-const joystick =
-    document.getElementById("joystick");
-
-const joystickKnob =
-    document.getElementById("joystickKnob");
-
-
-// ==========================================
-// CANVAS
-// ==========================================
-
 const WIDTH = 1000;
 
 const HEIGHT = 562;
+
 
 canvas.width = WIDTH;
 
 canvas.height = HEIGHT;
 
 
-// ==========================================
-// GAME STATE
-// ==========================================
+/* =========================================
+   SCREENS
+   ========================================= */
+
+const startScreen =
+    document.getElementById(
+        "startScreen"
+    );
+
+const pauseScreen =
+    document.getElementById(
+        "pauseScreen"
+    );
+
+const gameOverScreen =
+    document.getElementById(
+        "gameOverScreen"
+    );
+
+
+/* =========================================
+   BUTTONS
+   ========================================= */
+
+const startBtn =
+    document.getElementById(
+        "startBtn"
+    );
+
+const pauseBtn =
+    document.getElementById(
+        "pauseBtn"
+    );
+
+const resumeBtn =
+    document.getElementById(
+        "resumeBtn"
+    );
+
+const restartBtn =
+    document.getElementById(
+        "restartBtn"
+    );
+
+const restartBtn1 =
+    document.getElementById(
+        "restartBtn1"
+    );
+
+const closeGameBtn =
+    document.getElementById(
+        "closeGameBtn"
+    );
+
+const dashBtn =
+    document.getElementById(
+        "dashBtn"
+    );
+
+
+/* =========================================
+   HUD
+   ========================================= */
+
+const scoreElement =
+    document.getElementById(
+        "score"
+    );
+
+const coinsElement =
+    document.getElementById(
+        "coins"
+    );
+
+const livesElement =
+    document.getElementById(
+        "lives"
+    );
+
+const finalScoreElement =
+    document.getElementById(
+        "finalScore"
+    );
+
+const highScoreElement =
+    document.getElementById(
+        "highScore"
+    );
+
+
+/* =========================================
+   MOBILE CONTROLS
+   ========================================= */
+
+const mobileControls =
+    document.getElementById(
+        "mobileControls"
+    );
+
+const joystick =
+    document.getElementById(
+        "joystick"
+    );
+
+const joystickKnob =
+    document.getElementById(
+        "joystickKnob"
+    );
+
+
+/* =========================================
+   GAME STATE
+   ========================================= */
 
 let gameRunning = false;
 
@@ -111,6 +158,7 @@ let enemyTimer = 0;
 
 let coinTimer = 0;
 
+
 let particles = [];
 
 let enemies = [];
@@ -122,9 +170,9 @@ let powerUps = [];
 let keys = {};
 
 
-// ==========================================
-// MOBILE MOVEMENT
-// ==========================================
+/* =========================================
+   JOYSTICK STATE
+   ========================================= */
 
 let joystickActive = false;
 
@@ -132,10 +180,12 @@ let joystickX = 0;
 
 let joystickY = 0;
 
+let joystickPointerId = null;
 
-// ==========================================
-// HIGH SCORE
-// ==========================================
+
+/* =========================================
+   HIGH SCORE
+   ========================================= */
 
 let highScore =
     Number(
@@ -144,13 +194,14 @@ let highScore =
         ) || 0
     );
 
+
 highScoreElement.textContent =
     highScore;
 
 
-// ==========================================
-// PLAYER
-// ==========================================
+/* =========================================
+   PLAYER
+   ========================================= */
 
 const player = {
 
@@ -177,9 +228,9 @@ const player = {
 };
 
 
-// ==========================================
-// KEYBOARD
-// ==========================================
+/* =========================================
+   KEYBOARD INPUT
+   ========================================= */
 
 window.addEventListener(
     "keydown",
@@ -226,39 +277,49 @@ window.addEventListener(
 );
 
 
-// ==========================================
-// BUTTON EVENTS
-// ==========================================
+/* =========================================
+   BUTTON EVENTS
+   ========================================= */
 
 startBtn.addEventListener(
     "click",
     startGame
 );
 
+
 pauseBtn.addEventListener(
     "click",
     togglePause
 );
+
 
 resumeBtn.addEventListener(
     "click",
     togglePause
 );
 
+
 restartBtn.addEventListener(
     "click",
     startGame
 );
+
 
 restartBtn1.addEventListener(
     "click",
     startGame
 );
 
+
 closeGameBtn.addEventListener(
     "click",
     closeGame
 );
+
+
+/* =========================================
+   MOBILE DASH
+   ========================================= */
 
 dashBtn.addEventListener(
     "pointerdown",
@@ -272,11 +333,76 @@ dashBtn.addEventListener(
 );
 
 
-// ==========================================
-// START GAME
-// ==========================================
+/* =========================================
+   START GAME
+   ========================================= */
 
-function startGame() {
+async function startGame() {
+
+    /*
+     * On supported mobile browsers:
+     * enter fullscreen first.
+     *
+     * Orientation lock generally works
+     * only after a user gesture.
+     */
+
+    try {
+
+        if (
+            window.innerWidth <= 900 &&
+            !document.fullscreenElement &&
+            document.documentElement
+                .requestFullscreen
+        ) {
+
+            await document
+                .documentElement
+                .requestFullscreen();
+
+        }
+
+    } catch (error) {
+
+        console.log(
+            "Fullscreen unavailable:",
+            error
+        );
+
+    }
+
+
+    /*
+     * Request landscape mode.
+     */
+
+    try {
+
+        if (
+            window.innerWidth <= 900 &&
+            screen.orientation &&
+            screen.orientation.lock
+        ) {
+
+            await screen.orientation.lock(
+                "landscape"
+            );
+
+        }
+
+    } catch (error) {
+
+        console.log(
+            "Landscape lock unavailable:",
+            error
+        );
+
+    }
+
+
+    /* ==========================
+       RESET GAME
+       ========================== */
 
     score = 0;
 
@@ -312,6 +438,9 @@ function startGame() {
 
     joystickY = 0;
 
+    joystickActive = false;
+
+
     resetJoystick();
 
 
@@ -320,23 +449,45 @@ function startGame() {
     paused = false;
 
 
+    /* ==========================
+       SCREENS
+       ========================== */
+
     startScreen.classList.add(
         "hidden"
     );
 
+
     pauseScreen.classList.add(
         "hidden"
     );
+
 
     gameOverScreen.classList.add(
         "hidden"
     );
 
 
+    /* ==========================
+       MOBILE CONTROLS
+       ========================== */
+
+    if (
+        window.innerWidth <= 900
+    ) {
+
+        mobileControls.style.display =
+            "block";
+
+    }
+
+
     updateHUD();
+
 
     lastTime =
         performance.now();
+
 
     requestAnimationFrame(
         gameLoop
@@ -345,19 +496,24 @@ function startGame() {
 }
 
 
-// ==========================================
-// GAME LOOP
-// ==========================================
+/* =========================================
+   GAME LOOP
+   ========================================= */
 
 function gameLoop(time) {
 
-    if (!gameRunning)
+    if (!gameRunning) {
+
         return;
+
+    }
 
 
     const delta =
         Math.min(
-            (time - lastTime) / 1000,
+            (time - lastTime) /
+                1000,
+
             0.05
         );
 
@@ -381,9 +537,9 @@ function gameLoop(time) {
 }
 
 
-// ==========================================
-// UPDATE
-// ==========================================
+/* =========================================
+   UPDATE
+   ========================================= */
 
 function update(dt) {
 
@@ -426,9 +582,9 @@ function update(dt) {
 }
 
 
-// ==========================================
-// PLAYER
-// ==========================================
+/* =========================================
+   PLAYER MOVEMENT
+   ========================================= */
 
 function updatePlayer(dt) {
 
@@ -437,7 +593,7 @@ function updatePlayer(dt) {
     let dy = 0;
 
 
-    // Keyboard
+    /* KEYBOARD */
 
     if (
         keys["w"] ||
@@ -479,7 +635,7 @@ function updatePlayer(dt) {
     }
 
 
-    // MOBILE JOYSTICK
+    /* MOBILE JOYSTICK */
 
     if (joystickActive) {
 
@@ -490,7 +646,7 @@ function updatePlayer(dt) {
     }
 
 
-    // Normalize
+    /* NORMALIZE */
 
     const length =
         Math.sqrt(
@@ -512,6 +668,8 @@ function updatePlayer(dt) {
         player.speed;
 
 
+    /* DASH */
+
     if (
         player.dashTime > 0
     ) {
@@ -529,21 +687,24 @@ function updatePlayer(dt) {
         speed *
         dt;
 
+
     player.y +=
         dy *
         speed *
         dt;
 
 
-    // Boundaries
+    /* BOUNDARIES */
 
     player.x =
         Math.max(
             20,
+
             Math.min(
                 WIDTH -
-                player.width -
-                20,
+                    player.width -
+                    20,
+
                 player.x
             )
         );
@@ -552,10 +713,12 @@ function updatePlayer(dt) {
     player.y =
         Math.max(
             70,
+
             Math.min(
                 HEIGHT -
-                player.height -
-                20,
+                    player.height -
+                    20,
+
                 player.y
             )
         );
@@ -567,23 +730,29 @@ function updatePlayer(dt) {
 }
 
 
-// ==========================================
-// DASH
-// ==========================================
+/* =========================================
+   DASH
+   ========================================= */
 
 function dash() {
 
     if (
         !gameRunning ||
         paused
-    )
+    ) {
+
         return;
+
+    }
 
 
     if (
         player.dashCooldown > 0
-    )
+    ) {
+
         return;
+
+    }
 
 
     player.dashTime =
@@ -595,6 +764,7 @@ function dash() {
 
 
     createParticles(
+
         player.x +
             player.width / 2,
 
@@ -604,14 +774,15 @@ function dash() {
         18,
 
         "#8b5cf6"
+
     );
 
 }
 
 
-// ==========================================
-// ENEMIES
-// ==========================================
+/* =========================================
+   ENEMY SPAWNING
+   ========================================= */
 
 function spawnEnemies(dt) {
 
@@ -620,37 +791,39 @@ function spawnEnemies(dt) {
 
     if (
         enemyTimer > 0
-    )
+    ) {
+
         return;
+
+    }
 
 
     enemyTimer =
         Math.max(
             0.35,
+
             1.25 -
-            level * 0.07
+                level * 0.07
         );
 
 
     const size =
         28 +
-        Math.random() *
-        20;
+        Math.random() * 20;
 
 
     const y =
         80 +
         Math.random() *
-        (
-            HEIGHT -
-            130
-        );
+            (
+                HEIGHT -
+                130
+            );
 
 
     const speed =
         90 +
-        Math.random() *
-        70 +
+        Math.random() * 70 +
         level * 8;
 
 
@@ -672,8 +845,7 @@ function spawnEnemies(dt) {
             speed,
 
         type:
-            Math.random() <
-            0.2
+            Math.random() < 0.2
                 ? "fast"
                 : "normal",
 
@@ -686,6 +858,10 @@ function spawnEnemies(dt) {
 
 }
 
+
+/* =========================================
+   ENEMY UPDATE
+   ========================================= */
 
 function updateEnemies(dt) {
 
@@ -733,6 +909,7 @@ function updateEnemies(dt) {
 
                 }
 
+
                 return true;
 
             }
@@ -741,9 +918,9 @@ function updateEnemies(dt) {
 }
 
 
-// ==========================================
-// COINS
-// ==========================================
+/* =========================================
+   COIN SPAWN
+   ========================================= */
 
 function spawnCoins(dt) {
 
@@ -752,8 +929,11 @@ function spawnCoins(dt) {
 
     if (
         coinTimer > 0
-    )
+    ) {
+
         return;
+
+    }
 
 
     coinTimer = 1.4;
@@ -767,10 +947,10 @@ function spawnCoins(dt) {
         y:
             80 +
             Math.random() *
-            (
-                HEIGHT -
-                140
-            ),
+                (
+                    HEIGHT -
+                    140
+                ),
 
         radius: 10,
 
@@ -780,6 +960,10 @@ function spawnCoins(dt) {
 
 }
 
+
+/* =========================================
+   COIN UPDATE
+   ========================================= */
 
 function updateCoins(dt) {
 
@@ -805,9 +989,9 @@ function updateCoins(dt) {
 }
 
 
-// ==========================================
-// POWER UPS
-// ==========================================
+/* =========================================
+   POWER UPS
+   ========================================= */
 
 function updatePowerUps(dt) {
 
@@ -833,9 +1017,9 @@ function updatePowerUps(dt) {
 }
 
 
-// ==========================================
-// LEVEL
-// ==========================================
+/* =========================================
+   LEVEL
+   ========================================= */
 
 function updateLevel() {
 
@@ -854,10 +1038,15 @@ function updateLevel() {
 
 
         createParticles(
+
             WIDTH / 2,
+
             HEIGHT / 2,
+
             50,
+
             "#22d3ee"
+
         );
 
     }
@@ -865,9 +1054,9 @@ function updateLevel() {
 }
 
 
-// ==========================================
-// COLLISIONS
-// ==========================================
+/* =========================================
+   COLLISIONS
+   ========================================= */
 
 function checkCollisions() {
 
@@ -875,11 +1064,14 @@ function checkCollisions() {
         (enemy, index) => {
 
             if (
+
                 player.invincible <= 0 &&
+
                 isColliding(
                     player,
                     enemy
                 )
+
             ) {
 
                 enemies.splice(
@@ -896,17 +1088,17 @@ function checkCollisions() {
 
 
                 createParticles(
+
                     player.x +
-                        player.width /
-                        2,
+                        player.width / 2,
 
                     player.y +
-                        player.height /
-                        2,
+                        player.height / 2,
 
                     25,
 
                     "#ef4444"
+
                 );
 
 
@@ -934,13 +1126,11 @@ function checkCollisions() {
                 Math.hypot(
 
                     player.x +
-                        player.width /
-                        2 -
+                        player.width / 2 -
                         coin.x,
 
                     player.y +
-                        player.height /
-                        2 -
+                        player.height / 2 -
                         coin.y
 
                 );
@@ -962,10 +1152,15 @@ function checkCollisions() {
 
 
                 createParticles(
+
                     coin.x,
+
                     coin.y,
+
                     15,
+
                     "#facc15"
+
                 );
 
 
@@ -979,9 +1174,9 @@ function checkCollisions() {
 }
 
 
-// ==========================================
-// COLLISION CHECK
-// ==========================================
+/* =========================================
+   COLLISION HELPER
+   ========================================= */
 
 function isColliding(a, b) {
 
@@ -1008,9 +1203,9 @@ function isColliding(a, b) {
 }
 
 
-// ==========================================
-// PARTICLES
-// ==========================================
+/* =========================================
+   PARTICLES
+   ========================================= */
 
 function createParticles(
     x,
@@ -1071,6 +1266,10 @@ function createParticles(
 }
 
 
+/* =========================================
+   PARTICLE UPDATE
+   ========================================= */
+
 function updateParticles(dt) {
 
     particles.forEach(
@@ -1080,6 +1279,7 @@ function updateParticles(dt) {
                 particle.vx *
                 dt;
 
+
             particle.y +=
                 particle.vy *
                 dt;
@@ -1087,6 +1287,7 @@ function updateParticles(dt) {
 
             particle.vx *=
                 0.96;
+
 
             particle.vy *=
                 0.96;
@@ -1101,16 +1302,16 @@ function updateParticles(dt) {
 
     particles =
         particles.filter(
-            p =>
-                p.life > 0
+            particle =>
+                particle.life > 0
         );
 
 }
 
 
-// ==========================================
-// DRAW
-// ==========================================
+/* =========================================
+   DRAW
+   ========================================= */
 
 function draw() {
 
@@ -1133,9 +1334,9 @@ function draw() {
 }
 
 
-// ==========================================
-// BACKGROUND
-// ==========================================
+/* =========================================
+   BACKGROUND
+   ========================================= */
 
 function drawBackground() {
 
@@ -1215,14 +1416,15 @@ function drawBackground() {
 }
 
 
-// ==========================================
-// GRID
-// ==========================================
+/* =========================================
+   GRID
+   ========================================= */
 
 function drawGrid() {
 
     ctx.strokeStyle =
         "rgba(139,92,246,0.08)";
+
 
     ctx.lineWidth = 1;
 
@@ -1275,9 +1477,9 @@ function drawGrid() {
 }
 
 
-// ==========================================
-// PLAYER DRAW
-// ==========================================
+/* =========================================
+   PLAYER DRAW
+   ========================================= */
 
 function drawPlayer() {
 
@@ -1289,10 +1491,13 @@ function drawPlayer() {
 
 
     if (
+
         player.invincible > 0 &&
+
         Math.floor(
             player.invincible * 10
         ) % 2 === 0
+
     ) {
 
         return;
@@ -1305,6 +1510,7 @@ function drawPlayer() {
 
     ctx.shadowColor =
         "#a78bfa";
+
 
     ctx.shadowBlur =
         25 +
@@ -1337,48 +1543,58 @@ function drawPlayer() {
 
 
     ctx.lineTo(
+
         x +
             player.width,
 
         y +
             player.height
+
     );
 
 
     ctx.lineTo(
+
         x +
             player.width * 0.75,
 
         y +
             player.height -
             7
+
     );
 
 
     ctx.lineTo(
+
         x +
             player.width * 0.5,
 
         y +
             player.height
+
     );
 
 
     ctx.lineTo(
+
         x +
             player.width * 0.25,
 
         y +
             player.height -
             7
+
     );
 
 
     ctx.lineTo(
+
         x,
 
         y +
             player.height
+
     );
 
 
@@ -1389,6 +1605,7 @@ function drawPlayer() {
 
     ctx.shadowBlur = 0;
 
+
     ctx.fillStyle =
         "#11111b";
 
@@ -1396,11 +1613,17 @@ function drawPlayer() {
     ctx.beginPath();
 
     ctx.arc(
+
         x + 13,
+
         y + 17,
+
         3,
+
         0,
+
         Math.PI * 2
+
     );
 
     ctx.fill();
@@ -1409,11 +1632,17 @@ function drawPlayer() {
     ctx.beginPath();
 
     ctx.arc(
+
         x + 25,
+
         y + 17,
+
         3,
+
         0,
+
         Math.PI * 2
+
     );
 
     ctx.fill();
@@ -1424,9 +1653,9 @@ function drawPlayer() {
 }
 
 
-// ==========================================
-// ENEMY DRAW
-// ==========================================
+/* =========================================
+   ENEMY DRAW
+   ========================================= */
 
 function drawEnemies() {
 
@@ -1477,6 +1706,7 @@ function drawEnemies() {
 
             ctx.shadowBlur = 0;
 
+
             ctx.fillStyle =
                 "#080810";
 
@@ -1484,12 +1714,10 @@ function drawEnemies() {
             ctx.fillRect(
 
                 enemy.x +
-                    enemy.width *
-                    0.28,
+                    enemy.width * 0.28,
 
                 enemy.y +
-                    enemy.height *
-                    0.35,
+                    enemy.height * 0.35,
 
                 5,
 
@@ -1501,12 +1729,10 @@ function drawEnemies() {
             ctx.fillRect(
 
                 enemy.x +
-                    enemy.width *
-                    0.62,
+                    enemy.width * 0.62,
 
                 enemy.y +
-                    enemy.height *
-                    0.35,
+                    enemy.height * 0.35,
 
                 5,
 
@@ -1523,9 +1749,9 @@ function drawEnemies() {
 }
 
 
-// ==========================================
-// COINS DRAW
-// ==========================================
+/* =========================================
+   COIN DRAW
+   ========================================= */
 
 function drawCoins() {
 
@@ -1562,11 +1788,17 @@ function drawCoins() {
 
 
             ctx.arc(
+
                 0,
+
                 0,
+
                 coin.radius,
+
                 0,
+
                 Math.PI * 2
+
             );
 
 
@@ -1574,6 +1806,7 @@ function drawCoins() {
 
 
             ctx.shadowBlur = 0;
+
 
             ctx.fillStyle =
                 "#fff7ae";
@@ -1606,9 +1839,9 @@ function drawCoins() {
 }
 
 
-// ==========================================
-// POWER UP
-// ==========================================
+/* =========================================
+   POWER-UP DRAW
+   ========================================= */
 
 function drawPowerUps() {
 
@@ -1657,9 +1890,9 @@ function drawPowerUps() {
 }
 
 
-// ==========================================
-// PARTICLES DRAW
-// ==========================================
+/* =========================================
+   PARTICLE DRAW
+   ========================================= */
 
 function drawParticles() {
 
@@ -1706,9 +1939,9 @@ function drawParticles() {
 }
 
 
-// ==========================================
-// DASH INDICATOR
-// ==========================================
+/* =========================================
+   DASH INDICATOR
+   ========================================= */
 
 function drawDashIndicator() {
 
@@ -1783,17 +2016,19 @@ function drawDashIndicator() {
 }
 
 
-// ==========================================
-// HUD
-// ==========================================
+/* =========================================
+   HUD
+   ========================================= */
 
 function updateHUD() {
 
     scoreElement.textContent =
         score;
 
+
     coinsElement.textContent =
         coins;
+
 
     livesElement.textContent =
         lives;
@@ -1801,14 +2036,17 @@ function updateHUD() {
 }
 
 
-// ==========================================
-// PAUSE
-// ==========================================
+/* =========================================
+   PAUSE
+   ========================================= */
 
 function togglePause() {
 
-    if (!gameRunning)
+    if (!gameRunning) {
+
         return;
+
+    }
 
 
     paused =
@@ -1827,6 +2065,7 @@ function togglePause() {
             "hidden"
         );
 
+
         lastTime =
             performance.now();
 
@@ -1835,15 +2074,19 @@ function togglePause() {
 }
 
 
-// ==========================================
-// GAME OVER
-// ==========================================
+/* =========================================
+   GAME OVER
+   ========================================= */
 
 function endGame() {
 
     gameRunning = false;
 
     paused = false;
+
+
+    mobileControls.style.display =
+        "none";
 
 
     if (
@@ -1877,15 +2120,19 @@ function endGame() {
 }
 
 
-// ==========================================
-// CLOSE GAME
-// ==========================================
+/* =========================================
+   CLOSE GAME
+   ========================================= */
 
-function closeGame() {
+async function closeGame() {
 
     gameRunning = false;
 
     paused = false;
+
+
+    mobileControls.style.display =
+        "none";
 
 
     enemies = [];
@@ -1937,16 +2184,62 @@ function closeGame() {
 
     drawGrid();
 
+
+    /*
+     * Leave fullscreen when supported.
+     */
+
+    try {
+
+        if (
+            document.fullscreenElement &&
+            document.exitFullscreen
+        ) {
+
+            await document.exitFullscreen();
+
+        }
+
+    } catch (error) {
+
+        console.log(
+            "Could not exit fullscreen:",
+            error
+        );
+
+    }
+
+
+    /*
+     * Unlock orientation when supported.
+     */
+
+    try {
+
+        if (
+            screen.orientation &&
+            screen.orientation.unlock
+        ) {
+
+            screen.orientation.unlock();
+
+        }
+
+    } catch (error) {
+
+        console.log(
+            "Orientation unlock unavailable:",
+            error
+        );
+
+    }
+
 }
 
 
-// ==========================================
-// MOBILE JOYSTICK
-// ==========================================
-
-let joystickPointerId =
-    null;
-
+/* =========================================
+   JOYSTICK DOWN
+   ========================================= */
 
 joystick.addEventListener(
     "pointerdown",
@@ -1954,22 +2247,36 @@ joystick.addEventListener(
 
         event.preventDefault();
 
+
         joystickPointerId =
             event.pointerId;
 
+
         joystickActive = true;
 
-        joystick.setPointerCapture(
-            event.pointerId
-        );
 
-        updateJoystick(
-            event
-        );
+        try {
+
+            joystick.setPointerCapture(
+                event.pointerId
+            );
+
+        } catch (error) {
+
+            console.log(error);
+
+        }
+
+
+        updateJoystick(event);
 
     }
 );
 
+
+/* =========================================
+   JOYSTICK MOVE
+   ========================================= */
 
 joystick.addEventListener(
     "pointermove",
@@ -1978,23 +2285,32 @@ joystick.addEventListener(
         if (
             event.pointerId !==
             joystickPointerId
-        )
+        ) {
+
             return;
 
+        }
 
-        if (!joystickActive)
+
+        if (!joystickActive) {
+
             return;
+
+        }
 
 
         event.preventDefault();
 
-        updateJoystick(
-            event
-        );
+
+        updateJoystick(event);
 
     }
 );
 
+
+/* =========================================
+   JOYSTICK UP
+   ========================================= */
 
 joystick.addEventListener(
     "pointerup",
@@ -2003,47 +2319,55 @@ joystick.addEventListener(
         if (
             event.pointerId !==
             joystickPointerId
-        )
+        ) {
+
             return;
 
+        }
 
-        joystickActive = false;
 
-        joystickPointerId =
-            null;
-
-        joystickX = 0;
-
-        joystickY = 0;
-
-        resetJoystick();
+        stopJoystick();
 
     }
 );
 
+
+/* =========================================
+   JOYSTICK CANCEL
+   ========================================= */
 
 joystick.addEventListener(
     "pointercancel",
     () => {
 
-        joystickActive = false;
-
-        joystickPointerId =
-            null;
-
-        joystickX = 0;
-
-        joystickY = 0;
-
-        resetJoystick();
+        stopJoystick();
 
     }
 );
 
 
-// ==========================================
-// UPDATE JOYSTICK
-// ==========================================
+/* =========================================
+   STOP JOYSTICK
+   ========================================= */
+
+function stopJoystick() {
+
+    joystickActive = false;
+
+    joystickPointerId = null;
+
+    joystickX = 0;
+
+    joystickY = 0;
+
+    resetJoystick();
+
+}
+
+
+/* =========================================
+   UPDATE JOYSTICK
+   ========================================= */
 
 function updateJoystick(event) {
 
@@ -2073,7 +2397,7 @@ function updateJoystick(event) {
 
     const maxDistance =
         rect.width / 2 -
-        27;
+        24;
 
 
     const distance =
@@ -2121,9 +2445,9 @@ function updateJoystick(event) {
 }
 
 
-// ==========================================
-// RESET JOYSTICK
-// ==========================================
+/* =========================================
+   RESET JOYSTICK
+   ========================================= */
 
 function resetJoystick() {
 
@@ -2133,13 +2457,53 @@ function resetJoystick() {
 }
 
 
-// ==========================================
-// INITIAL SCREEN
-// ==========================================
+/* =========================================
+   HANDLE RESIZE / ORIENTATION
+   ========================================= */
+
+window.addEventListener(
+    "resize",
+    () => {
+
+        /*
+         * When the phone rotates,
+         * make sure the game canvas
+         * remains correctly displayed.
+         */
+
+        if (
+            window.innerWidth > 900
+        ) {
+
+            mobileControls.style.display =
+                "none";
+
+        } else if (
+            gameRunning &&
+            window.matchMedia(
+                "(orientation: landscape)"
+            ).matches
+        ) {
+
+            mobileControls.style.display =
+                "block";
+
+        }
+
+    }
+);
+
+
+/* =========================================
+   INITIALIZE
+   ========================================= */
+
+mobileControls.style.display =
+    "none";
+
 
 drawBackground();
 
 drawGrid();
 
-  
-
+updateHUD();
